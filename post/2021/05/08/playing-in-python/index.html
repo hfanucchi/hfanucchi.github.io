@@ -7,7 +7,7 @@
     <meta name="author" content="Hailey Fanucchi" />
     
     <link rel="shortcut icon" type="image/x-icon" href="../../../../../img/favicon.ico">
-    <title>My Simple Understanding of the Interaction of Python and R</title>
+    <title>Playing in Python</title>
     <meta name="generator" content="Hugo 0.83.1" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../../../../../css/main.css" />
@@ -54,7 +54,7 @@
       <div class="container">
         <div class="blog-post">
           <h3>
-            <strong><a href="../../../../../post/2021/05/08/my-post/">My Simple Understanding of the Interaction of Python and R</a></strong>
+            <strong><a href="../../../../../post/2021/05/08/playing-in-python/">Playing in Python</a></strong>
           </h3>
         </div>
  
@@ -72,17 +72,35 @@
               
 
 
-<p>A simple way to code in both R and Python in R server is to define the coding chunk with either “{r}” or “{python}”.</p>
-<p>You can switch back and forth between R and Python by using the reticulate package in R.</p>
-<pre class="r"><code>library(reticulate)
-me&lt;-&quot;Hailey&quot;</code></pre>
-<p>To pull R-defined objects when coding in python just write "r.___".</p>
-<pre class="python"><code>me=&quot;Fanucchi&quot;
-print(r.me,me)</code></pre>
-<pre><code>## Hailey Fanucchi</code></pre>
-<p>To code Python-defined objects when coding in R just write "py$___".</p>
-<pre class="r"><code>cat(c(me,py$me)) </code></pre>
-<pre><code>## Hailey Fanucchi</code></pre>
+<p>I have learned that coding in python is really not that different than coding in R.</p>
+<p>One big difference is that in python when you index the first position is the 0th position. Here is an example:</p>
+<pre class="python"><code>listA=[1,2,3,4,5,6,7,8,9,10]
+listB=[&#39;I&#39;,&#39;II&#39;,&#39;III&#39;,&#39;IV&#39;,&#39;V&#39;,&#39;VI&#39;,&#39;VII&#39;, &#39;VIII&#39;, &#39;IX&#39;, &#39;X&#39;]
+listA</code></pre>
+<pre><code>## [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</code></pre>
+<pre class="python"><code>listB</code></pre>
+<pre><code>## [&#39;I&#39;, &#39;II&#39;, &#39;III&#39;, &#39;IV&#39;, &#39;V&#39;, &#39;VI&#39;, &#39;VII&#39;, &#39;VIII&#39;, &#39;IX&#39;, &#39;X&#39;]</code></pre>
+<pre class="python"><code>listA[0]</code></pre>
+<pre><code>## 1</code></pre>
+<pre class="python"><code>listA[1]</code></pre>
+<pre><code>## 2</code></pre>
+<pre class="python"><code>listA[9]</code></pre>
+<pre><code>## 10</code></pre>
+<pre class="python"><code>listB[0]</code></pre>
+<pre><code>## &#39;I&#39;</code></pre>
+<pre class="python"><code>listB[1]</code></pre>
+<pre><code>## &#39;II&#39;</code></pre>
+<pre class="python"><code>listB[9]</code></pre>
+<pre><code>## &#39;X&#39;</code></pre>
+<p>You can use python as a calculator:</p>
+<pre class="python"><code>listA[4]+listA[0]</code></pre>
+<pre><code>## 6</code></pre>
+<pre class="python"><code>1456/3.5</code></pre>
+<pre><code>## 416.0</code></pre>
+<pre class="python"><code>16+4</code></pre>
+<pre><code>## 20</code></pre>
+<p>HOOK ’EM
+<img src="../../../../../post/2021-05-08-playing-in-python_files/IMG_8439.JPG" /></p>
 
             
         <hr>         <div class="related-posts">

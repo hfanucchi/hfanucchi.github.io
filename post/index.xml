@@ -8,13 +8,26 @@
     <language>en-US</language>
     <lastBuildDate>Sat, 08 May 2021 00:00:00 +0000</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My Post</title>
+      <title>My Simple Understanding of the Interaction of Python and R</title>
       <link>/post/2021/05/08/my-post/</link>
       <pubDate>Sat, 08 May 2021 00:00:00 +0000</pubDate>
       
       <guid>/post/2021/05/08/my-post/</guid>
-      <description>Link to project 1
-Link to google</description>
+      <description>A simple way to code in both R and Python in R server is to define the coding chunk with either “{r}” or “{python}”.
+You can switch back and forth between R and Python by using the reticulate package in R.
+library(reticulate) me&amp;lt;-&amp;quot;Hailey&amp;quot; To pull R-defined objects when coding in python just write &#34;r.___&#34;.
+me=&amp;quot;Fanucchi&amp;quot; print(r.me,me) ## Hailey Fanucchi To code Python-defined objects when coding in R just write &#34;</description>
+    </item>
+    
+    <item>
+      <title>Playing in Python</title>
+      <link>/post/2021/05/08/playing-in-python/</link>
+      <pubDate>Sat, 08 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/post/2021/05/08/playing-in-python/</guid>
+      <description>I have learned that coding in python is really not that different than coding in R.
+One big difference is that in python when you index the first position is the 0th position. Here is an example:
+listA=[1,2,3,4,5,6,7,8,9,10] listB=[&amp;#39;I&amp;#39;,&amp;#39;II&amp;#39;,&amp;#39;III&amp;#39;,&amp;#39;IV&amp;#39;,&amp;#39;V&amp;#39;,&amp;#39;VI&amp;#39;,&amp;#39;VII&amp;#39;, &amp;#39;VIII&amp;#39;, &amp;#39;IX&amp;#39;, &amp;#39;X&amp;#39;] listA ## [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] listB ## [&amp;#39;I&amp;#39;, &amp;#39;II&amp;#39;, &amp;#39;III&amp;#39;, &amp;#39;IV&amp;#39;, &amp;#39;V&amp;#39;, &amp;#39;VI&amp;#39;, &amp;#39;VII&amp;#39;, &amp;#39;VIII&amp;#39;, &amp;#39;IX&amp;#39;, &amp;#39;X&amp;#39;] listA[0] ## 1 listA[1] ## 2 listA[9] ## 10 listB[0] ## &amp;#39;I&amp;#39; listB[1] ## &amp;#39;II&amp;#39; listB[9] ## &amp;#39;X&amp;#39; You can use python as a calculator:</description>
     </item>
     
   </channel>

@@ -1,6 +1,6 @@
 ---
-title: My Post
-author: ''
+title: My Simple Understanding of the Interaction of Python and R
+author: 'Hailey Fanucchi'
 date: '2021-05-08'
 slug: my-post
 categories: []
@@ -8,14 +8,21 @@ tags: []
 description: ''
 ---
 
-[Link to project 1](/project/project1/)
+A simple way to code in both R and Python in R server is to define the coding chunk with either "{r}" or "{python}".
 
-[Link to google](https://www.google.com)
-
+You can switch back and forth between R and Python by using the reticulate package in R.  
 ```{r}
-
+library(reticulate)
+me<-"Hailey"
 ```
 
+To pull R-defined objects when coding in python just write "r.___".
 ```{python}
+me="Fanucchi"
+print(r.me,me)
+```
 
+To code Python-defined objects when coding in R just write "py$___".
+```{r}
+cat(c(me,py$me)) 
 ```

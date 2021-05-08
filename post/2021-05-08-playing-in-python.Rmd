@@ -1,0 +1,40 @@
+---
+title: Playing in Python
+author: 'Hailey Fanucchi'
+date: '2021-05-08'
+slug: playing-in-python
+categories: []
+tags: []
+description: ''
+---
+
+I have learned that coding in python is really not that different than coding in R. 
+
+One big difference is that in python when you index the first position is the 0th position. Here is an example:
+```{python}
+listA=[1,2,3,4,5,6,7,8,9,10]
+listB=['I','II','III','IV','V','VI','VII', 'VIII', 'IX', 'X']
+listA
+listB
+
+listA[0]
+listA[1]
+listA[9]
+
+listB[0]
+listB[1]
+listB[9]
+```
+
+
+You can use python as a calculator:
+```{python}
+listA[4]+listA[0]
+
+1456/3.5
+16+4
+```
+
+HOOK 'EM
+![](/post/2021-05-08-playing-in-python_files/IMG_8439.JPG)
+
