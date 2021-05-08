@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Hailey Fanucchi" />
+    
+    <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
+    <title>fanucchi.project1</title>
+    <meta name="generator" content="Hugo 0.83.1" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,200bold,400old" />
+    
+    <!--[if lt IE 9]>
+			<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+			<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+
+    
+  </head>
+
+  <body>
+    <div id="wrap">
+      
+      <nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="../../"><i class="fa fa-home"></i></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+        <li><a href="../../post/">BLOG</a></li>
+        
+        <li><a href="../../projects/">PROJECTS</a></li>
+        
+        <li><a href="../../resume/">RESUME</a></li>
+        
+      
+      </ul>
+    </div>
+  </div>
+</nav>
+
+      <div class="container">
+        <div class="blog-post">
+          <h3>
+            <strong><a href="../../project/p1.fanucchi/">fanucchi.project1</a></strong>
+          </h3>
+        </div>
+ 
+<div class="blog-title">
+          <h4>
+         January 1, 0001 
+            &nbsp;&nbsp;
+            
+          </h4>
+        </div>
+
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="blogpost">
+              
+
+
+<div id="find-data" class="section level4">
+<h4>Find Data</h4>
+<pre class="r"><code>library(tidyverse)
+motor &lt;- read_csv(&quot;https://vincentarelbundock.github.io/Rdatasets/csv/stevedata/mvprod.csv&quot;)
+pop &lt;- read_csv(&quot;https://vincentarelbundock.github.io/Rdatasets/csv/gt/countrypops.csv&quot;)
+
+glimpse(motor)</code></pre>
+<pre><code>## Rows: 1,206
+## Columns: 4
+## $ X1      &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18…
+## $ country &lt;chr&gt; &quot;Algeria&quot;, &quot;Argentina&quot;, &quot;Australia&quot;, &quot;Austria&quot;, &quot;Azerbaijan&quot;,…
+## $ year    &lt;dbl&gt; 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1…
+## $ value   &lt;dbl&gt; NA, NA, 58000, NA, NA, 0, 2400, NA, 0, NA, 387726, NA, NA, NA…</code></pre>
+<pre class="r"><code>glimpse(pop)</code></pre>
+<pre><code>## Rows: 12,470
+## Columns: 6
+## $ X1             &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,…
+## $ country_name   &lt;chr&gt; &quot;Aruba&quot;, &quot;Aruba&quot;, &quot;Aruba&quot;, &quot;Aruba&quot;, &quot;Aruba&quot;, &quot;Aruba&quot;, …
+## $ country_code_2 &lt;chr&gt; &quot;AW&quot;, &quot;AW&quot;, &quot;AW&quot;, &quot;AW&quot;, &quot;AW&quot;, &quot;AW&quot;, &quot;AW&quot;, &quot;AW&quot;, &quot;AW&quot;, …
+## $ country_code_3 &lt;chr&gt; &quot;ABW&quot;, &quot;ABW&quot;, &quot;ABW&quot;, &quot;ABW&quot;, &quot;ABW&quot;, &quot;ABW&quot;, &quot;ABW&quot;, &quot;ABW&quot;…
+## $ year           &lt;dbl&gt; 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, …
+## $ population     &lt;dbl&gt; 54211, 55438, 56225, 56695, 57032, 57360, 57715, 58055…</code></pre>
+</div>
+<div id="tidying-rearranging-widelong-8-pts" class="section level4">
+<h4>1. Tidying: Rearranging Wide/Long (8 pts)</h4>
+<ul>
+<li>Tidy the datasets (using the <code>tidyr</code> functions <code>pivot_longer</code>/<code>gather</code> and/or <code>pivot_wider</code>/<code>spread</code>)</li>
+<li>If you data sets are already tidy, be sure to use those functions somewhere else in your project (e.g., for rearranging summary statistics)</li>
+<li>Document the process (describe in words what was done)</li>
+</ul>
+<pre class="r"><code>motor &lt;- motor %&gt;% select(-1) %&gt;% na.omit()
+pop &lt;- pop %&gt;% select(-1) %&gt;% na.omit()</code></pre>
+<ul>
+<li>I have chosen 2 datasets for my project. One of the data sets is about how many motor vechicles each country produced by year, and one is about counties, their abreviations and populations. Luckily for this project, they were already tidy and ready to be joined.</li>
+</ul>
+</div>
+<div id="joiningmerging-8-pts" class="section level4">
+<h4>2. Joining/Merging (8 pts)</h4>
+<ul>
+<li>Join your datasets into one using a <code>dplyr</code> join function</li>
+<li>If you have multiple observations on the joining variable in either dataset, fix this by collapsing via summarize</li>
+<li>Discuss the process in words, including why you chose the join you did</li>
+<li>Discuss which cases were dropped, if any, and potential problems with this</li>
+</ul>
+<pre class="r"><code>join &lt;- right_join(motor, pop, by = c(year = &quot;year&quot;))
+
+join2 &lt;- join %&gt;% filter(country == country_name) %&gt;% select(-4) %&gt;% 
+    select(-4) %&gt;% rename(motors_produced = &quot;value&quot;)</code></pre>
+<ul>
+<li>I used a right join to join the two data sets because pop recorded populations of countries from 1960 to 2017 and motor recorded production observations from 1950 to 2019. By performing an right join by year I was able to combine the two based on years 1960-2017. This left off 10 years from the beginning observations of motor and 2 years off the end observations of motor. This is why I did a right join, because I needed to only leave observations off of one of the datasets. Originally there was 12305 observations from pop, and 899 from motor, now there are only 650 after filtering for the same country (in the original dataset pop had many observations for 1 country). That means 11655 oberservations were lost from pop, and 249 observations were lost from motor.</li>
+</ul>
+</div>
+<div id="wrangling-36-pts" class="section level4">
+<h4>3. Wrangling (36 pts)</h4>
+<ul>
+<li>Use all six core <code>dplyr</code> functions in the service of generating summary tables/statistics (12 pts)
+<ul>
+<li>Use mutate at least once to generate a variable that is a function of at least one other variable</li>
+</ul></li>
+<li>Compute summary statistics for each of your variables using <code>summarize</code> alone and with <code>group_by</code> (if you have more than 10 variables, fine to just focus on 10) (20 pts)
+<ul>
+<li>Use at least 5 unique functions inside of summarize (e.g., mean, sd)</li>
+<li>For at least 2, use summarize after grouping by a categorical variable. Create one by dichotomizing a numeric if necessary</li>
+<li>If applicable, at least 1 of these should group by two categorical variables</li>
+</ul></li>
+<li>Summarize/discuss all (or the most interesting) results in no more than two paragraphs (4 pts)</li>
+</ul>
+<pre class="r"><code>join3 &lt;- join2 %&gt;% unite(year, motors_produced, col = &quot;year.motors&quot;, 
+    remove = F) %&gt;% unite(year, population, col = &quot;year.pop&quot;, 
+    remove = F) %&gt;% select(-4, -5, -7) %&gt;% pivot_longer(c(&quot;year.motors&quot;:&quot;year.pop&quot;)) %&gt;% 
+    separate(value, into = c(&quot;year&quot;, &quot;count&quot;)) %&gt;% separate(name, 
+    into = c(&quot;year1&quot;, &quot;variable&quot;)) %&gt;% select(-3) %&gt;% pivot_wider(names_from = &quot;variable&quot;, 
+    values_from = &quot;count&quot;) %&gt;% rename(motor_count = &quot;motors&quot;) %&gt;% 
+    mutate_all(type.convert) %&gt;% mutate_if(is.factor, as.character) %&gt;% 
+    mutate(production = ifelse(motor_count &gt; 1e+07, &quot;high&quot;, ifelse(motor_count &lt;= 
+        1e+07 &amp; 0 &lt; motor_count, &quot;moderate&quot;, &quot;none&quot;))) %&gt;% mutate(populated = ifelse(pop &gt; 
+    9.9e+07, &quot;dense&quot;, ifelse(pop &lt;= 9.9e+07 &amp; 1e+07 &lt;= pop, &quot;moderate&quot;, 
+    &quot;light&quot;)))
+
+
+join3 %&gt;% summarise_all(n_distinct)</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   country country_code_3  year motor_count   pop production populated
+##     &lt;int&gt;          &lt;int&gt; &lt;int&gt;       &lt;int&gt; &lt;int&gt;      &lt;int&gt;     &lt;int&gt;
+## 1      54             54    15         570   650          3         3</code></pre>
+<pre class="r"><code>join3 %&gt;% group_by(production) %&gt;% summarise_all(sd) %&gt;% select(-2, 
+    -3, -4, -7) %&gt;% suppressWarnings()</code></pre>
+<pre><code>## # A tibble: 3 x 3
+##   production motor_count        pop
+##   &lt;chr&gt;            &lt;dbl&gt;      &lt;dbl&gt;
+## 1 high          6177814. 556137610.
+## 2 moderate      1808745. 210701362.
+## 3 none                0   58503239.</code></pre>
+<pre class="r"><code>join3 %&gt;% summarise_all(var) %&gt;% suppressWarnings()</code></pre>
+<pre><code>## # A tibble: 1 x 7
+##   country country_code_3  year motor_count     pop production populated
+##     &lt;dbl&gt;          &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;
+## 1      NA             NA  231.     1.13e13 5.91e16         NA        NA</code></pre>
+<pre class="r"><code>join3 %&gt;% summarise(max(pop))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `max(pop)`
+##        &lt;int&gt;
+## 1 1386395000</code></pre>
+<pre class="r"><code>join3 %&gt;% group_by(country, populated) %&gt;% summarise(max(motor_count), 
+    .groups = &quot;rowwise&quot;)</code></pre>
+<pre><code>## # A tibble: 63 x 3
+## # Rowwise:  country, populated
+##    country    populated `max(motor_count)`
+##    &lt;chr&gt;      &lt;chr&gt;                  &lt;int&gt;
+##  1 Algeria    moderate               60606
+##  2 Argentina  moderate              828771
+##  3 Australia  moderate              475000
+##  4 Austria    light                 253279
+##  5 Azerbaijan light                   2145
+##  6 Bangladesh dense                    580
+##  7 Bangladesh moderate                   0
+##  8 Belarus    light                  40100
+##  9 Belgium    light                1248290
+## 10 Belgium    moderate             1033294
+## # … with 53 more rows</code></pre>
+<ul>
+<li>I was impressed by how many motors some countries produced, and how many people are in the population. For example, China is by far the most populated and makes the most motors each year. Yet this is not always the case, the least populated country, Slovenia, makes a decent amount of motors, but more populated countries sometimes don’t make any motors. I also became more aware that the motors dataset only took motor production information of 15 years between 1960-1917, as time progressed the data was collected more frequently. I also learned that there is a huge divide between country’s populaties and motor production. The wealthier countries seem to produce more motors regardless, and the poorer counties have more of a spectrum being able to create alot, like India, to sometimes producing none.</li>
+</ul>
+</div>
+<div id="visualizing-30-pts" class="section level4">
+<h4>4. Visualizing (30 pts)</h4>
+<ul>
+<li><p>Create a correlation heatmap of your numeric variables the way we did in class</p></li>
+<li><p>Create two effective, polished plots with ggplot</p>
+<ul>
+<li>Each plot should map 3+ variables to aesthetics</li>
+<li>Each plot should have a title and clean labeling for all mappings</li>
+<li>Change at least one default theme element and color for at least one mapping per plot</li>
+<li>For at least one plot, add more tick marks (x, y, or both) than are given by default</li>
+<li>For at least one plot, use the stat=“summary” function</li>
+<li>Supporting paragraph or two (for each plot) describing the relationships/trends that are apparent</li>
+</ul></li>
+</ul>
+<pre class="r"><code>install.packages(&quot;ggthemes&quot;, repos = &quot;http://cran.us.r-project.org&quot;)
+
+library(ggplot2)
+join2 %&gt;% select_if(is.numeric) %&gt;% cor %&gt;% as.data.frame %&gt;% 
+    rownames_to_column %&gt;% pivot_longer(-1) %&gt;% ggplot(aes(rowname, 
+    name, fill = value)) + geom_tile() + geom_text(aes(label = round(value, 
+    2))) + xlab(&quot;&quot;) + ylab(&quot;&quot;) + coord_fixed() + scale_fill_gradient2(low = &quot;white&quot;, 
+    mid = &quot;blue&quot;, high = &quot;purple&quot;) + ggtitle(&quot;Correlations&quot;)</code></pre>
+<p><img src="../../project/P1.Fanucchi_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>join3 %&gt;% mutate(year = as.character(year)) %&gt;% ggplot(aes(year)) + 
+    geom_bar(aes(y = motor_count, fill = populated), stat = &quot;summary&quot;, 
+        fun = mean) + ggtitle(&quot;Yearly Motor Production by Population Status&quot;) + 
+    ylab(&quot;Motors Produced&quot;) + xlab(&quot;Year&quot;) + theme_light() + 
+    facet_wrap(~populated) + coord_flip() + scale_fill_manual(values = c(&quot;#821432&quot;, 
+    &quot;#CDEAF9&quot;, &quot;#9867C5&quot;)) + theme(axis.text.x = element_text(angle = 45, 
+    hjust = 1))</code></pre>
+<p><img src="../../project/P1.Fanucchi_files/figure-html/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>join3 %&gt;% ggplot(aes(year, pop, color = country)) + geom_point() + 
+    ggtitle(&quot;Yearly Population Size by Country&quot;) + ylab(&quot;Population&quot;) + 
+    xlab(&quot;Year&quot;) + geom_smooth() + theme_light() + scale_x_continuous(n.breaks = 20) + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="../../project/P1.Fanucchi_files/figure-html/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" />
+* My data all had some correlation to it, with all variables having some sort of positive correlation. Year and population were the least correlated with 0.02, and population and motors produced had the highest correlation with 0.57. I did expect year and population to have a higher correlation as our populations I thought were becoming more populated, so that was the greatest surprise. Another cool find was in my second graph with “Yearly Motor Production by Population Status” I saw that more densly populated countries seem to produce more motors in the more recent years, where lightly/moderately populated countries had a peak in production around 1990. Densly populated countries produced the most motors, while lightly populated produced the least. This was what I expected. The last graph, “Yearly Population Size by Country” was also very interesting. I saw that there is a general increase, with the most populated countries seeing the greatest increase in population over the years. This makes sense, as China and India are the most populated, so the population keeps creating more and more children adding to an already populated socitey.</p>
+</div>
+<div id="dimensionality-reduction-20-pts" class="section level4">
+<h4>5. Dimensionality Reduction (20 pts)</h4>
+<ul>
+<li><p>Either k-means/PAM clustering or PCA (inclusive “or”) should be performed on at least three of your variables (3 is just the minimum: using more/all of them will make this much more interesting!)</p>
+<ul>
+<li>All relevant steps discussed in class</li>
+<li>A visualization of the clusters or the first few principal components (using ggplot2)</li>
+<li>Supporting paragraph or two describing results found, interpreting the clusters/PCs etc.</li>
+</ul></li>
+</ul>
+<pre class="r"><code>library(cluster)
+
+join5 &lt;- join3 %&gt;% select(&quot;year&quot;, &quot;pop&quot;, &quot;motor_count&quot;) %&gt;% scale()
+sil_width &lt;- vector()  #empty vector to hold sil width
+for (i in 2:10) {
+    km &lt;- kmeans(join5, centers = i)  #computes k-means solution
+    sil &lt;- silhouette(km$cluster, dist(join5))  #generates sil widths
+    sil_width[i] &lt;- mean(sil[, 3])  #creates an average (higher averages are better)
+}
+ggplot() + geom_line(aes(x = 1:10, y = sil_width)) + scale_x_continuous(name = &quot;k&quot;, 
+    breaks = 1:10)  #elbow is where to pick (mine is 2), less clusters is better</code></pre>
+<p><img src="../../project/P1.Fanucchi_files/figure-html/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>kmeans &lt;- join5 %&gt;% kmeans(2)
+kmeans</code></pre>
+<pre><code>## K-means clustering with 2 clusters of sizes 52, 598
+## 
+## Cluster means:
+##           year        pop motor_count
+## 1  0.034462008  2.5274612   2.4419370
+## 2 -0.002996696 -0.2197792  -0.2123424
+## 
+## Clustering vector:
+##   [1] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2
+##  [38] 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 1 2 2 2 2
+##  [75] 2 2 2 2 2 2 2 2 2 2 1 2 2 2 2 2 2 2 2 1 2 2 2 1 2 2
+##  [ reached getOption(&quot;max.print&quot;) -- omitted 550 entries ]
+## 
+## Within cluster sum of squares by cluster:
+## [1] 503.2898 745.5365
+##  (between_SS / total_SS =  35.9 %)
+## 
+## Available components:
+## 
+## [1] &quot;cluster&quot;      &quot;centers&quot;      &quot;totss&quot;        &quot;withinss&quot;     &quot;tot.withinss&quot;
+## [6] &quot;betweenss&quot;    &quot;size&quot;         &quot;iter&quot;         &quot;ifault&quot;</code></pre>
+<pre class="r"><code>kmeanscluster &lt;- join5 %&gt;% as.data.frame() %&gt;% mutate(cluster = as.factor(kmeans$cluster))
+kmeanscluster %&gt;% ggplot(aes(motor_count, pop, color = cluster)) + 
+    geom_point()  #shows my clusters by my data, long lines show probably one countries observations (matches my by year observations)</code></pre>
+<p><img src="../../project/P1.Fanucchi_files/figure-html/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>library(GGally)
+ggpairs(kmeanscluster, columns = 1:3, aes(color = cluster))</code></pre>
+<p><img src="../../project/P1.Fanucchi_files/figure-html/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" />
+* I found that my data created two clusters, one of the early years and one of the later years. This was most evident in the ggpairs graphs, where there looked like a perfect divide between the years. As mentioned before, there was an increase in the populations and motors produced as the years progressed. The countries that created the most motors and had the highest populations saw the greatest increase, while the countries that were less populated, and created less motors saw almost no increase.</p>
+</div>
+
+            
+        <hr>         <div class="related-posts">
+                <h5>Related Posts</h5>
+                
+              </div> 
+            </div>
+          </div>
+
+   <hr>  <div class="disqus">
+  <div id="disqus_thread"></div>
+  <script type="text/javascript">
+
+    (function() {
+      
+      
+      if (window.location.hostname == "localhost")
+        return;
+
+      var disqus_shortname = '';
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  <a href="http://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</div> 
+        </div>
+      </div>
+    </div>
+
+    
+    <footer>
+  <div id="footer">
+    <div class="container">
+      <p class="text-muted">&copy; All rights reserved. Powered by <a href="https://gohugo.io/">Hugo</a> and
+      <a href="http://www.github.com/nurlansu/hugo-sustain/">sustain</a> with ♥</p>
+    </div>
+  </div>
+</footer>
+<div class="footer"></div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="../../js/docs.min.js"></script>
+<script src="../../js/main.js"></script>
+
+<script src="../../js/ie10-viewport-bug-workaround.js"></script>
+
+
+    
+  </body>
+</html>

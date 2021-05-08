@@ -1,0 +1,280 @@
+---
+title: " fanucchiproject2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE,fig.align="center",warning=FALSE,message=FALSE,fig.width=8, fig.height=5, linewidth=60)
+options(tibble.width = 100,width = 100)
+library(tidyverse)
+
+
+class_diag<-function(probs,truth){
+  
+  tab<-table(factor(probs>.5,levels=c("FALSE","TRUE")),truth)
+  acc=sum(diag(tab))/sum(tab)
+  sens=tab[2,2]/colSums(tab)[2]
+  spec=tab[1,1]/colSums(tab)[1]
+  ppv=tab[2,2]/rowSums(tab)[2]
+
+  if(is.numeric(truth)==FALSE & is.logical(truth)==FALSE) truth<-as.numeric(truth)-1
+  
+  #CALCULATE EXACT AUC
+  ord<-order(probs, decreasing=TRUE)
+  probs <- probs[ord]; truth <- truth[ord]
+  
+  TPR=cumsum(truth)/max(1,sum(truth)) 
+  FPR=cumsum(!truth)/max(1,sum(!truth))
+  
+  dup<-c(probs[-1]>=probs[-length(probs)], FALSE)
+  TPR<-c(0,TPR[!dup],1); FPR<-c(0,FPR[!dup],1)
+  
+  n <- length(TPR)
+  auc<- sum( ((TPR[-1]+TPR[-n])/2) * (FPR[-1]-FPR[-n]) )
+
+  data.frame(acc,sens,spec,ppv,auc)
+}
+```
+
+## R Markdown
+
+### 0. (5 pts) Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph. What are they measuring? How many observations?
+
+```{r}
+movies<-read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2movies/movies.csv")
+mov <-movies %>% na.omit() %>% select(-1, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17)
+mov <-subset(mov, mov$Short !=1) 
+mov <- mov %>% select(-13)
+mov <- subset(mov, mov$Documentary !=1)
+mov <- mov %>% select(-11)
+movnot <- mov %>% select(-1)
+```
+* The data set that I chose to do project 2 is based on the statistics and information IMDB has on a set of movies from 1938-2005. The information I thought was important to keep was the year the movie was made, the length of the movie, the budget of the movie, what IMDB users rate the movie 1-10, and the MPAA rating. There are 1790 movies in the condensed data set total.  
+
+
+### 1. (15 pts) Perform a MANOVA testing whether any of your numeric variables (or a subset of them, if including them all is unreasonable or doesn't make sense) show a mean difference across levels of one of your categorical variables (3). If they do, perform univariate ANOVAs to find response(s) showing a mean difference across groups (3), and perform post-hoc t tests to find which groups differ (3). Discuss the number of tests you have performed, calculate the probability of at least one type I error (if unadjusted), and adjust the significance level accordingly (bonferroni correction) before discussing significant differences (3). Briefly discuss some of the MANOVA assumptions and whether or not they are likely to have been met here (no need for anything too in-depth) (2).
+
+```{r}
+movnot
+man <-manova(cbind(length, budget, rating, year)~mpaa, data = movnot)
+summary(man)
+summary.aov(man)
+
+movnot%>%group_by(mpaa)%>%summarize(mean(year),mean(length), mean(budget))
+
+pairwise.t.test(movnot$year,movnot$mpaa, p.adj="none")
+pairwise.t.test(movnot$length,movnot$mpaa, p.adj="none")
+pairwise.t.test(movnot$budget,movnot$mpaa, p.adj="none")
+
+# 1 manova
+# 4 anova
+# 18 ttest
+# 23 total
+
+1-(0.95)^23 #0.6926431
+0.05/23 #0.002173913
+```
+* The manova test was used to test if year, length, budget, and rating had any affect on mpaa status. Some manova assumptions are that I used a random sample, multivariate normality, homogeneity of within-groups, linear relationships, no extreme outliers and more.  All the variables were significant for the mpaa. This means that all the variables reject the null of manova, and the means of all groups were equal. I then ran an anova test on all the variables and that showed that all but the rating variable was significant to predict mpaa. I ran 18 total ttest then for a total of 23 tests. There is a 0.6926 probability that I have made an error, and the bonferroni adjusted significance level should be 0.002173913 to keep the overall type I error rate at 0.05.
+
+### 2. (10 pts) Perform some kind of randomization test on your data (that makes sense). The statistic can be anything you want (mean difference, correlation, F-statistic/ANOVA, chi-squared), etc. State null and alternative hypotheses, perform the test, and interpret the results (7). Create a plot visualizing the null distribution and the test statistic (3).
+
+```{r}
+movnotdrop <- movnot %>% filter(mpaa=="R" | mpaa=="PG-13")
+
+ggplot(movnotdrop, aes(rating, fill=mpaa)) + geom_histogram(bins = 10) + facet_wrap(~mpaa, ncol = 2)
+
+movnotdrop %>% group_by(mpaa) %>% summarize(means=mean(rating)) %>% summarize('mean_diff:'=diff (means))
+
+rand_dist2 <- vector()
+for (i in 1:5000) {
+  new2 <- data.frame(rating=sample(movnotdrop$rating), mpaa=movnotdrop$mpaa)
+  rand_dist2[i] <- mean(new2[new2$mpaa=="R",]$rating)-mean(new2[new2$mpaa=="PG-13",]$rating)}
+
+{hist(rand_dist2, main="", ylab=""); abline(v = c(-0.08268578	, 0.08268578	), col = "blue")}
+
+mean(rand_dist2 > 0.08268578 | rand_dist2 < -0.08268578)
+
+t.test(data = movnotdrop, rating ~ mpaa)
+```
+* The null hypothesis for this part would be that there is no mean difference in the IMDB rating of the movie with the MPAA rating, specifically rated PG-13 and rated R. After the mean difference was tested it was concluded that the null hypothesis was accepted, and that there is not a mean difference in the IMDB rating between PG-13 and R movies. 
+
+### 3. (40 pts) Build a linear regression model predicting one of your response variables from at least 2 other variables, including their interaction. Mean-center any numeric variables involved in the interaction.
+
+    - Interpret the coefficient estimates (do not discuss significance) (10)
+    - Plot the regression using `ggplot()` using geom_smooth(method="lm"). If your interaction is numeric by numeric, refer to code in the slides to make the plot or check out the `interactions` package, which makes this easier. If you have 3 or more predictors, just chose two of them to plot for convenience. (10)
+    - What proportion of the variation in the outcome does your model explain? (4)
+    - Check assumptions of linearity, normality, and homoskedasticity either graphically or using a hypothesis test (5)
+    - Regardless, recompute regression results with robust standard errors via `coeftest(..., vcov=vcovHC(...))`. Discuss significance of results, including any changes from before/after robust SEs if applicable. (10)
+```{r}
+movnot1 <- movnot %>% mutate(length_c=length-mean(length, na.rm =T), year_c=year-mean(year, na.rm=T))
+
+fit3<-lm(rating~length_c*year_c,data=movnot1)
+summary(fit3)
+
+library(interactions)
+interact_plot(fit3, length_c, year_c, plot.points = T)
+
+resids<-lm(rating~length_c*year_c,data=movnot1)$residuals
+shapiro.test(resids) # true distribution is not normal
+
+library(sandwich); library(lmtest)
+bptest(fit3) #homoskedasticity is not met
+
+movnot1 %>% ggplot(aes(length_c+year_c, rating)) + geom_point() + geom_smooth(method = "lm", se=F) #linerarity is not met
+
+coeftest(fit3, vcov = vcovHC(fit3))
+
+```
+* The response variable, romance, was predicted from the interaction between length of movie and what year the movie was produced. The coefficient for each centered numeric variable is shown. From the plot it is apparent that the length is more important for the prediction of romance if the the year is later (closer to 2000s) because it has a steeper slope above the mean. The p-value for the Shapiro-Wilk test of 1.881e-09 is less than 0.05, meaning the distribution is not normal. Both normality and linearity assumptions are not met, and the data was  was not homoskedastistic. 
+
+### 4. (5 pts) Rerun same regression model (with the interaction), but this time compute bootstrapped standard errors (either by resampling observations or residuals). Discuss any changes you observe in SEs and p-values using these SEs compared to the original SEs and the robust SEs)
+```{r}
+dat4 <- movnot1
+boot_dat4 <- sample_frac(dat4, replace=T)
+
+samp_distn4 <- replicate(5000, {
+  boot_dat4 <- sample_frac(dat4, replace = T)
+  fit4 <- lm(rating~length_c*year_c,data=boot_dat4)
+  coef(fit4)
+})
+
+fit4 <- lm(rating~length_c*year_c,data=boot_dat4)
+samp_distn4 %>% t %>% as.data.frame %>% summarise_all(sd)
+summary(fit4)
+```
+* Compared to the part 3 regression model, the standard errors increased in this model. The p-value in part 3 was < 2.2e-16, and the p-value in this part was < 2.2e-16, indicating the same p-value, which is very significant.
+
+### 5. (30 pts) Fit a logistic regression model predicting a binary variable (if you don't have one, make/get one) from at least two explanatory variables (interaction not necessary). 
+
+    - Interpret coefficient estimates in context (10)
+    - Report a confusion matrix for your logistic regression (5)
+    - Compute and discuss the Accuracy, Sensitivity (TPR), Specificity (TNR), Precision (PPV), and AUC of your model (5)
+    - Using ggplot, make a density plot of the log-odds (logit) colored/grouped by your binary outcome variable (5)
+    - Generate an ROC curve (plot) and calculate AUC (either manually or with a package); interpret (5)
+
+```{r}
+movnot5 <- movnot
+library(plotROC)
+fit5<-glm(Romance~budget+rating+mpaa+length,data=movnot5, family= "binomial")
+coeftest(fit5)
+exp(coef(fit5))%>%round(3) 
+
+prob5<-predict(fit5,type="response")
+table(predict=as.numeric(prob5>.5),truth=movnot5$Romance)%>%addmargins
+
+#Sensitivity
+3/324 #0.009259259
+#Specificity
+1461/1466 #0.9965894
+#Precision
+3/8 #0.375
+
+prob5<-predict(fit5,type="response") #save predicted probabilities
+
+class_diag(prob5, movnot5$Romance)
+
+movnot5$logit <- predict(fit5, type="link")
+
+movnot5$Romance <- factor(movnot$Romance, levels = c("1","0"))
+                         ggplot(movnot5,aes(logit,fill=Romance))+geom_density(alpha=.5)+geom_vline(xintercept = 0)
+
+ggplot(movnot) + geom_roc(aes(d=Romance, m=prob5))+ geom_abline(slope = 1)
+calc_auc(ggplot(movnot) + geom_roc(aes(d=Romance, m=prob5))+ geom_abline(slope = 1)) #0.6402731
+```
+* The binary variable I chose for this question was whether or not the movie was a romance movie. Those that are a romance movie are labeled with 1 and the color red. Those that are not a romance movie are labeled 0 and the color blue. The auc was 0.6402731, which is considered a poor predictor.
+
+
+## 6. (25 pts) Perform a logistic regression predicting the same binary response variable from *ALL* of the rest of your variables (the more, the better!) 
+
+    - Fit model, compute in-sample classification diagnostics (Accuracy, Sensitivity, Specificity, Precision, AUC), and interpret (5)
+    - Perform 10-fold (or repeated random sub-sampling) CV with the same model and report average out-of-sample classification diagnostics (Accuracy, Sensitivity, Specificity, Precision, and AUC); interpret AUC and compare with the in-sample metrics (10)
+    - Perform LASSO on the same model/variables. Choose lambda to give the simplest model whose accuracy is near that of the best (i.e., `lambda.1se`). Discuss which variables are retained. (5)
+    - Perform 10-fold CV using only the variables lasso selected: compare model's out-of-sample AUC to that of your logistic regressions above (5)
+
+```{r}
+movnot6 <-movnot
+
+#
+
+fit6<-glm(Romance~(.),data=movnot6, family= "binomial")
+coeftest(fit6)
+exp(coef(fit6))%>%round(3) 
+
+prob6<-predict(fit6,type="response") 
+
+class_diag(prob6, movnot6$Romance)
+
+###
+
+k=10
+set.seed(348)
+
+data<-movnot6[sample(nrow(movnot6)),]
+folds<-cut(seq(1:nrow(movnot6)),breaks=k,labels=F)
+
+diags<-NULL
+for(i in 1:k){
+  train<-data[folds!=i,]
+  test<-data[folds==i,]
+  truth<-test$Romance
+  
+  fitall1<-glm(Romance~.,data=train)
+  probsall<-predict(fitall1,newdata = test,type="response")
+
+diags<-rbind(diags,class_diag(probsall,truth))
+}
+
+diags%>%summarize_all(mean)
+
+###
+
+model.matrix(fitall1) [,-1]
+y<-as.matrix(movnot6$Romance) #grab response
+x<-model.matrix(Romance~(.),data=movnot6)[,-1] #grab predictors
+head(x)
+
+x<-scale(x) #good idea to standardize
+
+library(glmnet)
+cv <- cv.glmnet(x,y, family="binomial") #picks an optimal value for lambda through 10-fold CV
+lasso<-glmnet(x,y,family="binomial",lambda=cv$lambda.1se)
+coef(lasso)
+
+###
+
+movnot61<-movnot6%>% mutate(mpaaPG13=ifelse(movnot$mpaa=="PG-13",1,0))
+
+k=10
+set.seed(348)
+
+data<-movnot61[sample(nrow(movnot61)),]
+folds<-cut(seq(1:nrow(movnot61)),breaks=k,labels=F)
+
+diags2<-NULL
+for(i in 1:k){
+  train<-data[folds!=i,]
+  test<-data[folds==i,]
+  truth<-test$Romance
+  
+  fitall2<-glm(Romance~length+mpaaPG13+Action+Comedy+Drama,data=train)
+  probsall2<-predict(fitall2,newdata = test,type="response")
+
+diags2<-rbind(diags2,class_diag(probsall2,truth))
+}
+
+diags2%>%summarize_all(mean) 
+```
+* From running the regression, it was found that the variables that had a significant effect on predicting if the movie was a romance movie was the length, of the movie was a comedy movie, if the movie was an action movie and if the movie was a drama movie. The initial auc was 0.752259. Next, the 10-fold CV was performed, and the auc decreased a little with 0.7383472. This value was only slightly lower than the in in-sample metrics. Next, a lasso was performed to determine which variables had significant effects. Length, mpaaPG-13, action, comedy, and drama remained important. These variables were then used in another 10 fold CV. The auc for that was 0.7399957, which was a decrease from the initial auc, but practically identical to the first 10 fold CV. 
