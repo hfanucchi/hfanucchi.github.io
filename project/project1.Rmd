@@ -1,8 +1,141 @@
 ---
-title: "Project 1"
-author: "Me"
-date: "2020-12-01"
-output: html_document
+title: "fanucchi.project1"
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
 ---
 
-## Test Project 1
+```{r global_options,, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE, fig.align = "center", warning = F, message = F,
+tidy=TRUE, tidy.opts=list(width.cutoff=60), R.options=list(max.print=100))
+```
+
+#### Find Data
+
+```{r}
+library(tidyverse)
+motor <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/stevedata/mvprod.csv")
+pop <- read_csv("https://vincentarelbundock.github.io/Rdatasets/csv/gt/countrypops.csv")
+
+glimpse(motor) 
+glimpse(pop)
+```
+
+#### 1. Tidying: Rearranging Wide/Long (8 pts)
+
+- Tidy the datasets (using the `tidyr` functions `pivot_longer`/`gather` and/or `pivot_wider`/`spread`) 
+- If you data sets are already tidy, be sure to use those functions somewhere else in your project (e.g., for rearranging summary statistics)
+- Document the process (describe in words what was done)
+```{r}
+motor <- motor %>% select(-1) %>% na.omit()
+pop <- pop %>% select(-1) %>% na.omit()
+```
+* I have chosen 2 datasets for my project. One of the data sets is about how many motor vechicles each country produced by year, and one is about counties, their abreviations and populations. Luckily for this project, they were already tidy and ready to be joined.
+
+#### 2. Joining/Merging (8 pts)
+
+- Join your datasets into one using a `dplyr` join function
+- If you have multiple observations on the joining variable in either dataset, fix this by collapsing via summarize
+- Discuss the process in words, including why you chose the join you did
+- Discuss which cases were dropped, if any, and potential problems with this
+```{r}
+join <- right_join(motor, pop, by=c('year'='year')) 
+
+join2 <- join %>% filter(country==country_name) %>% select(-4) %>% select(-4) %>% rename("motors_produced"="value")
+```
+* I used a right join to join the two data sets because pop recorded populations of countries from 1960 to 2017 and motor recorded production observations from 1950 to 2019. By performing an right join by year I was able to combine the two based on years 1960-2017. This left off 10 years from the beginning observations of motor and 2 years off the end observations of motor. This is why I did a right join, because I needed to only leave observations off of one of the datasets. Originally there was 12305 observations from pop, and 899 from motor, now there are only 650 after filtering for the same country (in the original dataset pop had many observations for 1 country). That means 11655 oberservations were lost from pop, and 249 observations were lost from motor. 
+
+
+#### 3. Wrangling (36 pts)
+
+- Use all six core `dplyr` functions in the service of generating summary tables/statistics (12 pts)
+    - Use mutate at least once to generate a variable that is a function of at least one other variable
+
+- Compute summary statistics for each of your variables using `summarize` alone and with `group_by` (if you have more than 10 variables, fine to just focus on 10) (20 pts)
+    - Use at least 5 unique functions inside of summarize (e.g., mean, sd)
+    - For at least 2, use summarize after grouping by a categorical variable. Create one by dichotomizing a numeric if necessary
+    - If applicable, at least 1 of these should group by two categorical variables
+
+- Summarize/discuss all (or the most interesting) results in no more than two paragraphs (4 pts)
+```{r}
+join3 <- join2 %>% unite(year, motors_produced, col="year.motors", remove=F) %>% unite(year, population, col="year.pop", remove=F) %>% select(-4, -5, -7) %>% pivot_longer(c("year.motors":"year.pop")) %>% separate(value, into = c("year", "count")) %>% separate(name, into = c("year1", "variable")) %>% select(-3) %>% pivot_wider(names_from = "variable", values_from="count") %>% rename("motor_count"="motors") %>% mutate_all(type.convert) %>% mutate_if(is.factor, as.character) %>% mutate(production = ifelse(motor_count>10000000, "high",
+ifelse(motor_count<=10000000 & 0<motor_count, "moderate", "none"))) %>% mutate(populated = ifelse(pop>99000000, "dense",
+ifelse(pop<=99000000 & 10000000<=pop, "moderate", "light")))
+
+
+join3 %>% summarise_all(n_distinct) 
+join3 %>% group_by(production) %>% summarise_all(sd) %>% select(-2,-3,-4,-7) %>% suppressWarnings()
+join3 %>% summarise_all(var) %>% suppressWarnings()
+join3 %>% summarise(max(pop))
+join3 %>% group_by(country, populated) %>% summarise(max(motor_count), .groups = "rowwise") 
+
+```
+* I was impressed by how many motors some countries produced, and how many people are in the population. For example, China is by far the most populated and makes the most motors each year. Yet this is not always the case, the least populated country, Slovenia, makes a decent amount of motors, but more populated countries sometimes don't make any motors. I also became more aware that the motors dataset only took motor production information of 15 years between 1960-1917, as time progressed the data was collected more frequently. I also learned that there is a huge divide between country's populaties and motor production. The wealthier countries seem to produce more motors regardless, and the poorer counties have more of a spectrum being able to create alot, like India, to sometimes producing none.
+
+#### 4. Visualizing (30 pts)
+
+- Create a correlation heatmap of your numeric variables the way we did in class
+
+- Create two effective, polished plots with ggplot
+
+    - Each plot should map 3+ variables to aesthetics 
+    - Each plot should have a title and clean labeling for all mappings
+    - Change at least one default theme element and color for at least one mapping per plot
+    - For at least one plot, add more tick marks (x, y, or both) than are given by default
+    - For at least one plot, use the stat="summary" function
+    - Supporting paragraph or two (for each plot) describing the relationships/trends that are apparent
+```{r}
+install.packages("ggthemes", repos = "http://cran.us.r-project.org")
+
+library(ggplot2)
+join2 %>% select_if(is.numeric) %>% cor %>% as.data.frame %>%
+rownames_to_column %>% pivot_longer(-1) %>%
+ggplot(aes(rowname,name,fill=value))+geom_tile()+
+geom_text(aes(label=round(value,2)))+
+xlab("")+ylab("")+coord_fixed()+ scale_fill_gradient2(low="white", mid="blue", high="purple") + ggtitle("Correlations")
+
+join3 %>% mutate(year=as.character(year)) %>% ggplot(aes(year)) + geom_bar(aes(y= motor_count, fill=populated), stat="summary", fun=mean) +
+ggtitle("Yearly Motor Production by Population Status")+ylab("Motors Produced")+xlab("Year") + theme_light() + facet_wrap(~populated) + coord_flip() + scale_fill_manual(values=c("#821432", "#CDEAF9", "#9867C5")) + theme(axis.text.x = element_text(angle=45, hjust = 1))
+
+join3 %>% ggplot(aes(year,pop, color=country)) + geom_point() +
+ggtitle("Yearly Population Size by Country")+ylab("Population")+xlab("Year") + geom_smooth() + theme_light() + scale_x_continuous(n.breaks = 20) + theme(axis.text.x = element_text(angle=45, hjust = 1)) 
+```
+* My data all had some correlation to it, with all variables having some sort of positive correlation. Year and population were the least correlated with 0.02, and population and motors produced had the highest correlation with 0.57. I did expect year and population to have a higher correlation as our populations I thought were becoming more populated, so that was the greatest surprise. Another cool find was in my second graph with "Yearly Motor Production by Population Status" I saw that more densly populated countries seem to produce more motors in the more recent years, where lightly/moderately populated countries had a peak in production around 1990. Densly populated countries produced the most motors, while lightly populated produced the least. This was what I expected. The last graph, "Yearly Population Size by Country" was also very interesting. I saw that there is a general increase, with the most populated countries seeing the greatest increase in population over the years. This makes sense, as China and India are the most populated, so the population keeps creating more and more children adding to an already populated socitey. 
+
+#### 5. Dimensionality Reduction (20 pts) 
+
+- Either k-means/PAM clustering or PCA (inclusive "or") should be performed on at least three of your variables (3 is just the minimum: using more/all of them will make this much more interesting!)
+
+    - All relevant steps discussed in class 
+    - A visualization of the clusters or the first few principal components (using ggplot2)
+    - Supporting paragraph or two describing results found, interpreting the clusters/PCs etc.
+```{r}
+library(cluster)
+
+join5 <- join3 %>% select("year", "pop", "motor_count") %>% scale()
+sil_width<-vector() #empty vector to hold sil width
+for(i in 2:10){  
+  km <- kmeans(join5, centers = i) #computes k-means solution
+  sil <- silhouette(km$cluster, dist(join5)) #generates sil widths
+  sil_width[i]<- mean(sil[,3]) #creates an average (higher averages are better)
+}
+ggplot()+geom_line(aes(x=1:10,y=sil_width))+scale_x_continuous(name="k",breaks=1:10) #elbow is where to pick (mine is 2), less clusters is better
+
+kmeans <- join5 %>% kmeans(2)
+kmeans
+
+kmeanscluster <- join5 %>% as.data.frame() %>% mutate(cluster=as.factor(kmeans$cluster))
+kmeanscluster %>% ggplot(aes(motor_count, pop, color=cluster)) + geom_point() #shows my clusters by my data, long lines show probably one countries observations (matches my by year observations)
+
+library(GGally)
+ggpairs(kmeanscluster, columns = 1:3, aes(color=cluster))
+
+```
+* I found that my data created two clusters, one of the early years and one of the later years. This was most evident in the ggpairs graphs, where there looked like a perfect divide between the years. As mentioned before, there was an increase in the populations and motors produced as the years progressed. The countries that created the most motors and had the highest populations saw the greatest increase, while the countries that were less populated, and created less motors saw almost no increase.
+
+
+
+
+

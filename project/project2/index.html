@@ -7,7 +7,7 @@
     <meta name="author" content="Hailey Fanucchi" />
     
     <link rel="shortcut icon" type="image/x-icon" href="../../img/favicon.ico">
-    <title>Project 2</title>
+    <title> fanucchiproject2</title>
     <meta name="generator" content="Hugo 0.83.1" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="../../css/main.css" />
@@ -54,13 +54,13 @@
       <div class="container">
         <div class="blog-post">
           <h3>
-            <strong><a href="../../project/project2/">Project 2</a></strong>
+            <strong><a href="../../project/project2/"> fanucchiproject2</a></strong>
           </h3>
         </div>
  
 <div class="blog-title">
           <h4>
-         December 1, 2020 
+         January 1, 0001 
             &nbsp;&nbsp;
             
           </h4>
@@ -72,8 +72,2087 @@
               
 
 
-<div id="test-project-2" class="section level2">
-<h2>Test Project 2</h2>
+<div id="r-markdown" class="section level2">
+<h2>R Markdown</h2>
+<div id="pts-introduce-your-dataset-and-each-of-your-variables-or-just-your-main-variables-if-you-have-lots-in-a-paragraph.-what-are-they-measuring-how-many-observations" class="section level3">
+<h3>0. (5 pts) Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph. What are they measuring? How many observations?</h3>
+<pre class="r"><code>movies&lt;-read_csv(&quot;https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2movies/movies.csv&quot;)
+mov &lt;-movies %&gt;% na.omit() %&gt;% select(-1, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17)
+mov &lt;-subset(mov, mov$Short !=1) 
+mov &lt;- mov %&gt;% select(-13)
+mov &lt;- subset(mov, mov$Documentary !=1)
+mov &lt;- mov %&gt;% select(-11)
+movnot &lt;- mov %&gt;% select(-1)</code></pre>
+<ul>
+<li>The data set that I chose to do project 2 is based on the statistics and information IMDB has on a set of movies from 1938-2005. The information I thought was important to keep was the year the movie was made, the length of the movie, the budget of the movie, what IMDB users rate the movie 1-10, and the MPAA rating. There are 1790 movies in the condensed data set total.</li>
+</ul>
+</div>
+<div id="pts-perform-a-manova-testing-whether-any-of-your-numeric-variables-or-a-subset-of-them-if-including-them-all-is-unreasonable-or-doesnt-make-sense-show-a-mean-difference-across-levels-of-one-of-your-categorical-variables-3.-if-they-do-perform-univariate-anovas-to-find-responses-showing-a-mean-difference-across-groups-3-and-perform-post-hoc-t-tests-to-find-which-groups-differ-3.-discuss-the-number-of-tests-you-have-performed-calculate-the-probability-of-at-least-one-type-i-error-if-unadjusted-and-adjust-the-significance-level-accordingly-bonferroni-correction-before-discussing-significant-differences-3.-briefly-discuss-some-of-the-manova-assumptions-and-whether-or-not-they-are-likely-to-have-been-met-here-no-need-for-anything-too-in-depth-2." class="section level3">
+<h3>1. (15 pts) Perform a MANOVA testing whether any of your numeric variables (or a subset of them, if including them all is unreasonable or doesn’t make sense) show a mean difference across levels of one of your categorical variables (3). If they do, perform univariate ANOVAs to find response(s) showing a mean difference across groups (3), and perform post-hoc t tests to find which groups differ (3). Discuss the number of tests you have performed, calculate the probability of at least one type I error (if unadjusted), and adjust the significance level accordingly (bonferroni correction) before discussing significant differences (3). Briefly discuss some of the MANOVA assumptions and whether or not they are likely to have been met here (no need for anything too in-depth) (2).</h3>
+<pre class="r"><code>movnot</code></pre>
+<pre><code>## # A tibble: 1,790 x 10
+## year length budget rating mpaa Action Animation Comedy
+Drama Romance
+## &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+&lt;dbl&gt;
+## 1 1997 113 23000000 4.8 PG-13 0 0 1 0 1
+## 2 1999 97 16000000 6.7 PG-13 0 0 1 0 1
+## 3 2002 98 1100000 5.6 R 0 0 1 0 0
+## 4 2004 98 37000000 6.4 PG-13 0 0 1 1 1
+## 5 1999 102 85000000 6.1 R 1 0 0 0 0
+## 6 2001 120 42000000 6.1 R 0 0 0 1 0
+## 7 1972 180 4000000 7.3 PG 0 0 0 1 0
+## 8 2003 107 76000000 5.1 PG-13 1 0 0 0 0
+## 9 1999 101 6000000 5.4 R 0 0 1 1 0
+## 10 2000 99 26000000 2.5 R 0 0 1 0 0
+## # … with 1,780 more rows</code></pre>
+<pre class="r"><code>man &lt;-manova(cbind(length, budget, rating, year)~mpaa, data = movnot)
+summary(man)</code></pre>
+<pre><code>## Df Pillai approx F num Df den Df Pr(&gt;F)
+## mpaa 3 0.17643 27.883 12 5355 &lt; 2.2e-16 ***
+## Residuals 1786
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>summary.aov(man)</code></pre>
+<pre><code>## Response length :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## mpaa 3 9218 3072.68 7.3332 6.937e-05 ***
+## Residuals 1786 748345 419.01
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response budget :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## mpaa 3 1.8498e+17 6.1660e+16 72.592 &lt; 2.2e-16 ***
+## Residuals 1786 1.5170e+18 8.4941e+14
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Response rating :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## mpaa 3 5.78 1.9265 1.1546 0.3258
+## Residuals 1786 2979.91 1.6685
+##
+## Response year :
+## Df Sum Sq Mean Sq F value Pr(&gt;F)
+## mpaa 3 1845 614.84 17.913 1.868e-11 ***
+## Residuals 1786 61302 34.32
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>movnot%&gt;%group_by(mpaa)%&gt;%summarize(mean(year),mean(length), mean(budget))</code></pre>
+<pre><code>## # A tibble: 4 x 4
+##   mpaa  `mean(year)` `mean(length)` `mean(budget)`
+##   &lt;chr&gt;        &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;
+## 1 NC-17        1984            121.       6948143.
+## 2 PG           1998.           102.      37244444.
+## 3 PG-13        1999.           109.      41651761.
+## 4 R            1999.           107.      20056564.</code></pre>
+<pre class="r"><code>pairwise.t.test(movnot$year,movnot$mpaa, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  movnot$year and movnot$mpaa 
+## 
+##       NC-17   PG     PG-13 
+## PG    3.9e-10 -      -     
+## PG-13 5.2e-12 0.0065 -     
+## R     1.5e-11 0.0413 0.2012
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(movnot$length,movnot$mpaa, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  movnot$length and movnot$mpaa 
+## 
+##       NC-17   PG      PG-13  
+## PG    0.01453 -       -      
+## PG-13 0.12411 1.6e-05 -      
+## R     0.06997 0.00092 0.05558
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code>pairwise.t.test(movnot$budget,movnot$mpaa, p.adj=&quot;none&quot;)</code></pre>
+<pre><code>## 
+##  Pairwise comparisons using t tests with pooled SD 
+## 
+## data:  movnot$budget and movnot$mpaa 
+## 
+##       NC-17  PG      PG-13  
+## PG    0.0069 -       -      
+## PG-13 0.0018 0.0654  -      
+## R     0.2358 1.5e-14 &lt; 2e-16
+## 
+## P value adjustment method: none</code></pre>
+<pre class="r"><code># 1 manova
+# 4 anova
+# 18 ttest
+# 23 total
+
+1-(0.95)^23 #0.6926431</code></pre>
+<pre><code>## [1] 0.6926431</code></pre>
+<pre class="r"><code>0.05/23 #0.002173913</code></pre>
+<pre><code>## [1] 0.002173913</code></pre>
+<ul>
+<li>The manova test was used to test if year, length, budget, and rating had any affect on mpaa status. Some manova assumptions are that I used a random sample, multivariate normality, homogeneity of within-groups, linear relationships, no extreme outliers and more. All the variables were significant for the mpaa. This means that all the variables reject the null of manova, and the means of all groups were equal. I then ran an anova test on all the variables and that showed that all but the rating variable was significant to predict mpaa. I ran 18 total ttest then for a total of 23 tests. There is a 0.6926 probability that I have made an error, and the bonferroni adjusted significance level should be 0.002173913 to keep the overall type I error rate at 0.05.</li>
+</ul>
+</div>
+<div id="pts-perform-some-kind-of-randomization-test-on-your-data-that-makes-sense.-the-statistic-can-be-anything-you-want-mean-difference-correlation-f-statisticanova-chi-squared-etc.-state-null-and-alternative-hypotheses-perform-the-test-and-interpret-the-results-7.-create-a-plot-visualizing-the-null-distribution-and-the-test-statistic-3." class="section level3">
+<h3>2. (10 pts) Perform some kind of randomization test on your data (that makes sense). The statistic can be anything you want (mean difference, correlation, F-statistic/ANOVA, chi-squared), etc. State null and alternative hypotheses, perform the test, and interpret the results (7). Create a plot visualizing the null distribution and the test statistic (3).</h3>
+<pre class="r"><code>movnotdrop &lt;- movnot %&gt;% filter(mpaa==&quot;R&quot; | mpaa==&quot;PG-13&quot;)
+
+ggplot(movnotdrop, aes(rating, fill=mpaa)) + geom_histogram(bins = 10) + facet_wrap(~mpaa, ncol = 2)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-3-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>movnotdrop %&gt;% group_by(mpaa) %&gt;% summarize(means=mean(rating)) %&gt;% summarize(&#39;mean_diff:&#39;=diff (means))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   `mean_diff:`
+##          &lt;dbl&gt;
+## 1       0.0827</code></pre>
+<pre class="r"><code>rand_dist2 &lt;- vector()
+for (i in 1:5000) {
+  new2 &lt;- data.frame(rating=sample(movnotdrop$rating), mpaa=movnotdrop$mpaa)
+  rand_dist2[i] &lt;- mean(new2[new2$mpaa==&quot;R&quot;,]$rating)-mean(new2[new2$mpaa==&quot;PG-13&quot;,]$rating)}
+
+{hist(rand_dist2, main=&quot;&quot;, ylab=&quot;&quot;); abline(v = c(-0.08268578   , 0.08268578    ), col = &quot;blue&quot;)}</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-3-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>mean(rand_dist2 &gt; 0.08268578 | rand_dist2 &lt; -0.08268578)</code></pre>
+<pre><code>## [1] 0.2224</code></pre>
+<pre class="r"><code>t.test(data = movnotdrop, rating ~ mpaa)</code></pre>
+<pre><code>##
+## Welch Two Sample t-test
+##
+## data: rating by mpaa
+## t = -1.2656, df = 1198.2, p-value = 0.2059
+## alternative hypothesis: true difference in means is not
+equal to 0
+## 95 percent confidence interval:
+## -0.2108659 0.0454943
+## sample estimates:
+## mean in group PG-13 mean in group R
+## 5.887476 5.970162</code></pre>
+<ul>
+<li>The null hypothesis for this part would be that there is no mean difference in the IMDB rating of the movie with the MPAA rating, specifically rated PG-13 and rated R. After the mean difference was tested it was concluded that the null hypothesis was accepted, and that there is not a mean difference in the IMDB rating between PG-13 and R movies.</li>
+</ul>
+</div>
+<div id="pts-build-a-linear-regression-model-predicting-one-of-your-response-variables-from-at-least-2-other-variables-including-their-interaction.-mean-center-any-numeric-variables-involved-in-the-interaction." class="section level3">
+<h3>3. (40 pts) Build a linear regression model predicting one of your response variables from at least 2 other variables, including their interaction. Mean-center any numeric variables involved in the interaction.</h3>
+<pre><code>- Interpret the coefficient estimates (do not discuss significance) (10)
+- Plot the regression using `ggplot()` using geom_smooth(method=&quot;lm&quot;). If your interaction is numeric by numeric, refer to code in the slides to make the plot or check out the `interactions` package, which makes this easier. If you have 3 or more predictors, just chose two of them to plot for convenience. (10)
+- What proportion of the variation in the outcome does your model explain? (4)
+- Check assumptions of linearity, normality, and homoskedasticity either graphically or using a hypothesis test (5)
+- Regardless, recompute regression results with robust standard errors via `coeftest(..., vcov=vcovHC(...))`. Discuss significance of results, including any changes from before/after robust SEs if applicable. (10)</code></pre>
+<pre class="r"><code>movnot1 &lt;- movnot %&gt;% mutate(length_c=length-mean(length, na.rm =T), year_c=year-mean(year, na.rm=T))
+
+fit3&lt;-lm(rating~length_c*year_c,data=movnot1)
+summary(fit3)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = rating ~ length_c * year_c, data = movnot1)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -4.0093 -0.6842 0.0378 0.7899 3.3059
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 5.9398195 0.0273388 217.267 &lt; 2e-16 ***
+## length_c 0.0291728 0.0014129 20.647 &lt; 2e-16 ***
+## year_c -0.0163062 0.0048059 -3.393 0.000707 ***
+## length_c:year_c 0.0005419 0.0001266 4.278 1.98e-05 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 1.151 on 1786 degrees of
+freedom
+## Multiple R-squared: 0.2082, Adjusted R-squared: 0.2069
+## F-statistic: 156.5 on 3 and 1786 DF, p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>library(interactions)
+interact_plot(fit3, length_c, year_c, plot.points = T)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>resids&lt;-lm(rating~length_c*year_c,data=movnot1)$residuals
+shapiro.test(resids) # true distribution is not normal</code></pre>
+<pre><code>## 
+##  Shapiro-Wilk normality test
+## 
+## data:  resids
+## W = 0.99044, p-value = 1.881e-09</code></pre>
+<pre class="r"><code>library(sandwich); library(lmtest)
+bptest(fit3) #homoskedasticity is not met</code></pre>
+<pre><code>## 
+##  studentized Breusch-Pagan test
+## 
+## data:  fit3
+## BP = 27.879, df = 3, p-value = 3.851e-06</code></pre>
+<pre class="r"><code>movnot1 %&gt;% ggplot(aes(length_c+year_c, rating)) + geom_point() + geom_smooth(method = &quot;lm&quot;, se=F) #linerarity is not met</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-4-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>coeftest(fit3, vcov = vcovHC(fit3))</code></pre>
+<pre><code>##
+## t test of coefficients:
+##
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 5.93981947 0.02737667 216.9665 &lt; 2.2e-16 ***
+## length_c 0.02917278 0.00152906 19.0789 &lt; 2.2e-16 ***
+## year_c -0.01630622 0.00593367 -2.7481 0.006055 **
+## length_c:year_c 0.00054185 0.00013270 4.0832 4.638e-05
+***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<ul>
+<li>The response variable, romance, was predicted from the interaction between length of movie and what year the movie was produced. The coefficient for each centered numeric variable is shown. From the plot it is apparent that the length is more important for the prediction of romance if the the year is later (closer to 2000s) because it has a steeper slope above the mean. The p-value for the Shapiro-Wilk test of 1.881e-09 is less than 0.05, meaning the distribution is not normal. Both normality and linearity assumptions are not met, and the data was was not homoskedastistic.</li>
+</ul>
+</div>
+<div id="pts-rerun-same-regression-model-with-the-interaction-but-this-time-compute-bootstrapped-standard-errors-either-by-resampling-observations-or-residuals.-discuss-any-changes-you-observe-in-ses-and-p-values-using-these-ses-compared-to-the-original-ses-and-the-robust-ses" class="section level3">
+<h3>4. (5 pts) Rerun same regression model (with the interaction), but this time compute bootstrapped standard errors (either by resampling observations or residuals). Discuss any changes you observe in SEs and p-values using these SEs compared to the original SEs and the robust SEs)</h3>
+<pre class="r"><code>dat4 &lt;- movnot1
+boot_dat4 &lt;- sample_frac(dat4, replace=T)
+
+samp_distn4 &lt;- replicate(5000, {
+  boot_dat4 &lt;- sample_frac(dat4, replace = T)
+  fit4 &lt;- lm(rating~length_c*year_c,data=boot_dat4)
+  coef(fit4)
+})
+
+fit4 &lt;- lm(rating~length_c*year_c,data=boot_dat4)
+samp_distn4 %&gt;% t %&gt;% as.data.frame %&gt;% summarise_all(sd)</code></pre>
+<pre><code>##   (Intercept)    length_c      year_c length_c:year_c
+## 1  0.02717374 0.001516955 0.005747452    0.0001282387</code></pre>
+<pre class="r"><code>summary(fit4)</code></pre>
+<pre><code>##
+## Call:
+## lm(formula = rating ~ length_c * year_c, data =
+boot_dat4)
+##
+## Residuals:
+## Min 1Q Median 3Q Max
+## -3.9765 -0.7046 0.0491 0.7921 2.8824
+##
+## Coefficients:
+## Estimate Std. Error t value Pr(&gt;|t|)
+## (Intercept) 5.8975929 0.0276463 213.323 &lt; 2e-16 ***
+## length_c 0.0304143 0.0015498 19.625 &lt; 2e-16 ***
+## year_c -0.0166024 0.0045631 -3.638 0.000282 ***
+## length_c:year_c 0.0004225 0.0001277 3.309 0.000956 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1
+##
+## Residual standard error: 1.158 on 1786 degrees of
+freedom
+## Multiple R-squared: 0.1957, Adjusted R-squared: 0.1944
+## F-statistic: 144.9 on 3 and 1786 DF, p-value: &lt; 2.2e-16</code></pre>
+<ul>
+<li>Compared to the part 3 regression model, the standard errors increased in this model. The p-value in part 3 was &lt; 2.2e-16, and the p-value in this part was &lt; 2.2e-16, indicating the same p-value, which is very significant.</li>
+</ul>
+</div>
+<div id="pts-fit-a-logistic-regression-model-predicting-a-binary-variable-if-you-dont-have-one-makeget-one-from-at-least-two-explanatory-variables-interaction-not-necessary." class="section level3">
+<h3>5. (30 pts) Fit a logistic regression model predicting a binary variable (if you don’t have one, make/get one) from at least two explanatory variables (interaction not necessary).</h3>
+<pre><code>- Interpret coefficient estimates in context (10)
+- Report a confusion matrix for your logistic regression (5)
+- Compute and discuss the Accuracy, Sensitivity (TPR), Specificity (TNR), Precision (PPV), and AUC of your model (5)
+- Using ggplot, make a density plot of the log-odds (logit) colored/grouped by your binary outcome variable (5)
+- Generate an ROC curve (plot) and calculate AUC (either manually or with a package); interpret (5)</code></pre>
+<pre class="r"><code>movnot5 &lt;- movnot
+library(plotROC)
+fit5&lt;-glm(Romance~budget+rating+mpaa+length,data=movnot5, family= &quot;binomial&quot;)
+coeftest(fit5)</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -3.6656e+00 1.2661e+00 -2.8952 0.003789 **
+## budget -1.2177e-08 2.5780e-09 -4.7234 2.320e-06 ***
+## rating -8.2601e-03 5.4736e-02 -0.1509 0.880048
+## mpaaPG 1.1537e+00 1.2027e+00 0.9593 0.337430
+## mpaaPG-13 1.5463e+00 1.1926e+00 1.2966 0.194786
+## mpaaR 5.5229e-01 1.1877e+00 0.4650 0.641930
+## length 1.4595e-02 3.4600e-03 4.2184 2.461e-05 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(fit5))%&gt;%round(3) </code></pre>
+<pre><code>## (Intercept) budget rating mpaaPG mpaaPG-13 mpaaR length
+## 0.026 1.000 0.992 3.170 4.694 1.737 1.015</code></pre>
+<pre class="r"><code>prob5&lt;-predict(fit5,type=&quot;response&quot;)
+table(predict=as.numeric(prob5&gt;.5),truth=movnot5$Romance)%&gt;%addmargins</code></pre>
+<pre><code>##        truth
+## predict    0    1  Sum
+##     0   1461  321 1782
+##     1      5    3    8
+##     Sum 1466  324 1790</code></pre>
+<pre class="r"><code>#Sensitivity
+3/324 #0.009259259</code></pre>
+<pre><code>## [1] 0.009259259</code></pre>
+<pre class="r"><code>#Specificity
+1461/1466 #0.9965894</code></pre>
+<pre><code>## [1] 0.9965894</code></pre>
+<pre class="r"><code>#Precision
+3/8 #0.375</code></pre>
+<pre><code>## [1] 0.375</code></pre>
+<pre class="r"><code>prob5&lt;-predict(fit5,type=&quot;response&quot;) #save predicted probabilities
+
+class_diag(prob5, movnot5$Romance)</code></pre>
+<pre><code>##         acc        sens      spec   ppv      auc
+## 1 0.8178771 0.009259259 0.9965894 0.375 0.640271</code></pre>
+<pre class="r"><code>movnot5$logit &lt;- predict(fit5, type=&quot;link&quot;)
+
+movnot5$Romance &lt;- factor(movnot$Romance, levels = c(&quot;1&quot;,&quot;0&quot;))
+                         ggplot(movnot5,aes(logit,fill=Romance))+geom_density(alpha=.5)+geom_vline(xintercept = 0)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggplot(movnot) + geom_roc(aes(d=Romance, m=prob5))+ geom_abline(slope = 1)</code></pre>
+<p><img src="../../project/project2_files/figure-html/unnamed-chunk-6-2.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>calc_auc(ggplot(movnot) + geom_roc(aes(d=Romance, m=prob5))+ geom_abline(slope = 1)) #0.6402731</code></pre>
+<pre><code>##   PANEL group       AUC
+## 1     1    -1 0.6402731</code></pre>
+<ul>
+<li>The binary variable I chose for this question was whether or not the movie was a romance movie. Those that are a romance movie are labeled with 1 and the color red. Those that are not a romance movie are labeled 0 and the color blue. The auc was 0.6402731, which is considered a poor predictor.</li>
+</ul>
+</div>
+</div>
+<div id="pts-perform-a-logistic-regression-predicting-the-same-binary-response-variable-from-all-of-the-rest-of-your-variables-the-more-the-better" class="section level2">
+<h2>6. (25 pts) Perform a logistic regression predicting the same binary response variable from <em>ALL</em> of the rest of your variables (the more, the better!)</h2>
+<pre><code>- Fit model, compute in-sample classification diagnostics (Accuracy, Sensitivity, Specificity, Precision, AUC), and interpret (5)
+- Perform 10-fold (or repeated random sub-sampling) CV with the same model and report average out-of-sample classification diagnostics (Accuracy, Sensitivity, Specificity, Precision, and AUC); interpret AUC and compare with the in-sample metrics (10)
+- Perform LASSO on the same model/variables. Choose lambda to give the simplest model whose accuracy is near that of the best (i.e., `lambda.1se`). Discuss which variables are retained. (5)
+- Perform 10-fold CV using only the variables lasso selected: compare model&#39;s out-of-sample AUC to that of your logistic regressions above (5)</code></pre>
+<pre class="r"><code>movnot6 &lt;-movnot
+
+#
+
+fit6&lt;-glm(Romance~(.),data=movnot6, family= &quot;binomial&quot;)
+coeftest(fit6)</code></pre>
+<pre><code>##
+## z test of coefficients:
+##
+## Estimate Std. Error z value Pr(&gt;|z|)
+## (Intercept) -1.7251e+01 2.4712e+01 -0.6981 0.48512
+## year 6.2360e-03 1.2350e-02 0.5049 0.61360
+## length 2.0152e-02 4.1286e-03 4.8810 1.055e-06 ***
+## budget -4.2631e-09 3.0687e-09 -1.3892 0.16476
+## rating -1.2085e-01 6.2359e-02 -1.9379 0.05263 .
+## mpaaPG 1.1551e+00 1.2258e+00 0.9424 0.34600
+## mpaaPG-13 1.6313e+00 1.2172e+00 1.3402 0.18019
+## mpaaR 8.1868e-01 1.2135e+00 0.6746 0.49990
+## Action -1.3583e+00 2.5645e-01 -5.2967 1.179e-07 ***
+## Animation -1.0366e+00 7.5440e-01 -1.3740 0.16944
+## Comedy 1.2530e+00 1.5309e-01 8.1852 2.719e-16 ***
+## Drama 7.0701e-01 1.5848e-01 4.4611 8.155e-06 ***
+## ---
+## Signif. codes: 0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1
+&#39; &#39; 1</code></pre>
+<pre class="r"><code>exp(coef(fit6))%&gt;%round(3) </code></pre>
+<pre><code>## (Intercept) year length budget rating mpaaPG mpaaPG-13
+mpaaR
+## 0.000 1.006 1.020 1.000 0.886 3.174 5.110 2.267
+## Action Animation Comedy Drama
+## 0.257 0.355 3.501 2.028</code></pre>
+<pre class="r"><code>prob6&lt;-predict(fit6,type=&quot;response&quot;) 
+
+class_diag(prob6, movnot6$Romance)</code></pre>
+<pre><code>##         acc      sens      spec       ppv      auc
+## 1 0.8234637 0.1049383 0.9822647 0.5666667 0.752259</code></pre>
+<pre class="r"><code>###
+
+k=10
+set.seed(348)
+
+data&lt;-movnot6[sample(nrow(movnot6)),]
+folds&lt;-cut(seq(1:nrow(movnot6)),breaks=k,labels=F)
+
+diags&lt;-NULL
+for(i in 1:k){
+  train&lt;-data[folds!=i,]
+  test&lt;-data[folds==i,]
+  truth&lt;-test$Romance
+  
+  fitall1&lt;-glm(Romance~.,data=train)
+  probsall&lt;-predict(fitall1,newdata = test,type=&quot;response&quot;)
+
+diags&lt;-rbind(diags,class_diag(probsall,truth))
+}
+
+diags%&gt;%summarize_all(mean)</code></pre>
+<pre><code>##         acc sens      spec ppv       auc
+## 1 0.8184358    0 0.9993333 NaN 0.7383472</code></pre>
+<pre class="r"><code>###
+
+model.matrix(fitall1) [,-1]</code></pre>
+<pre><code>## year length budget rating mpaaPG mpaaPG-13 mpaaR Action
+Animation Comedy Drama
+## 1 1996 136 4500000 7.9 0 0 1 0 0 1 1
+## 2 1996 108 350000 5.8 0 0 1 0 0 1 1
+## 3 2000 130 51000000 7.3 0 0 1 0 0 0 1
+## 4 2001 95 50000000 4.1 0 1 0 0 0 1 0
+## 5 2002 96 7000000 6.2 0 0 1 0 0 0 1
+## 6 2004 125 110000000 6.0 0 1 0 0 0 1 0
+## 7 1995 97 20000000 6.7 0 1 0 0 0 1 0
+## 8 1997 97 16000000 2.6 0 1 0 1 0 0 0
+## 9 2004 118 25000000 7.3 0 0 1 0 0 1 1
+## 10 1998 105 1300000 8.2 0 0 1 0 0 0 1
+## 11 2002 102 500000 5.6 0 1 0 0 0 0 1
+## 12 2000 89 13000000 4.6 1 0 0 0 0 1 0
+## 13 2003 88 1000000 6.3 0 0 1 0 0 1 0
+## 14 2001 102 250000 4.4 0 0 1 0 0 0 0
+## 15 2001 208 93000000 8.8 0 1 0 1 0 0 0
+## 16 2003 94 800000 6.8 0 0 1 0 0 0 1
+## 17 2000 120 9000000 6.5 0 0 1 0 0 0 0
+## 18 2002 116 27000000 5.5 0 1 0 0 0 1 1
+## 19 1999 91 8000000 5.1 0 1 0 0 0 1 1
+## 20 2004 98 31000000 6.3 0 1 0 0 0 1 1
+## 21 1999 100 16000000 6.4 0 0 1 0 0 0 0
+## 22 2004 124 33000000 6.2 0 0 1 1 0 0 0
+## 23 1997 124 85000000 6.3 0 0 1 1 0 0 1
+## 24 2003 94 17000000 5.0 1 0 0 0 0 1 0
+## 25 2000 116 62000000 6.5 0 1 0 1 0 0 1
+## 26 1971 118 1300000 8.0 0 0 1 0 0 0 1
+## 27 2004 92 20000000 6.6 0 1 0 0 0 1 0
+## 28 2004 98 37000000 6.4 0 1 0 0 0 1 1
+## 29 2001 91 4000000 4.7 0 0 1 1 0 0 0
+## 30 2003 99 6000000 2.7 0 0 1 0 0 1 1
+## 31 2004 111 23000000 5.7 0 1 0 0 0 1 0
+## 32 1999 98 5000000 4.5 0 1 0 1 0 0 1
+## 33 1999 95 6000000 5.7 0 0 1 0 0 0 0
+## 34 2001 99 9000000 6.2 0 0 1 0 0 0 1
+## 35 2002 113 4000000 7.8 0 0 1 0 0 0 1
+## 36 2001 81 200000 6.4 0 0 1 0 1 1 0
+## 37 2002 96 20000000 5.6 0 0 1 1 0 0 1
+## 38 1996 80 13000000 5.0 0 1 0 0 0 1 0
+## 39 1995 177 53000000 8.3 0 0 1 1 0 0 1
+## 40 1999 126 55000000 6.1 0 0 1 0 0 0 1
+## 41 2000 104 65000000 6.1 1 0 0 0 0 1 1
+## 42 2002 116 36000000 6.4 0 1 0 0 0 0 1
+## 43 2000 110 55000000 6.7 0 1 0 1 0 1 0
+## 44 2003 96 6000000 4.1 0 0 1 0 0 0 0
+## 45 2002 87 80000 2.4 0 0 1 0 0 0 0
+## 46 2002 92 55000000 4.7 0 0 1 0 0 0 1
+## 47 1995 129 29000000 7.9 0 0 1 0 0 0 1
+## 48 1998 113 10000000 6.1 0 0 1 0 0 0 1
+## 49 1997 92 1000000 5.7 0 0 0 0 0 1 0
+## 50 2001 95 90000000 6.4 1 0 0 1 1 0 0
+## 51 2004 115 105000000 7.0 0 1 0 1 0 0 0
+## 52 1999 77 22000000 3.6 1 0 0 0 0 1 0
+## 53 2001 94 3300000 4.6 0 0 1 0 0 0 1
+## 54 2001 108 5000000 7.3 0 0 1 0 0 0 1
+## 55 1998 104 8000000 6.4 0 0 1 0 0 1 1
+## 56 2000 90 58000000 3.7 1 0 0 0 0 1 0
+## 57 2002 113 45000000 7.5 0 1 0 0 0 1 1
+## 58 1999 102 40000000 5.8 0 1 0 0 0 1 0
+## 59 1998 110 40000000 5.8 0 1 0 1 0 1 0
+## 60 1997 103 12000000 6.4 0 0 1 0 0 1 1
+## 61 2002 73 10000000 6.2 1 0 0 1 1 1 0
+## 62 2002 116 7000000 7.7 0 0 1 0 0 1 1
+## 63 1997 86 100000 2.8 0 0 1 1 0 0 0
+## 64 2001 92 1200000 3.9 0 0 1 0 0 0 0
+## 65 2003 121 70000000 6.2 0 0 1 1 0 0 1
+## 66 2004 101 3000000 6.1 0 0 1 0 0 0 1
+## 67 2000 97 4000000 6.2 0 0 1 0 0 1 1
+## 68 2004 138 30000000 7.3 0 0 1 0 0 1 1
+## 69 2005 90 600000 1.9 0 0 1 0 0 0 0
+## 70 2002 114 25000000 7.6 0 1 0 0 0 0 1
+## 71 1998 134 80000000 5.3 0 1 0 0 0 0 0
+## 72 1998 88 1000000 6.1 0 0 1 0 0 1 0
+## 73 2003 143 125000000 8.0 0 1 0 1 0 1 0
+## 74 2003 116 80000000 5.2 0 1 0 0 0 0 0
+## 75 2002 101 30000000 7.4 0 0 1 0 0 0 1
+## 76 1998 97 45000000 5.4 0 0 1 1 0 0 0
+## 77 2003 80 120000 5.1 0 0 1 0 0 0 0
+## 78 1999 103 6500000 7.4 0 0 1 0 0 1 0
+## 79 2001 132 41000000 6.5 0 1 0 1 0 1 0
+## 80 2001 104 90000000 4.5 0 0 1 0 0 1 0
+## 81 1997 84 650000 5.3 0 0 1 0 0 1 0
+## 82 2003 105 20000000 5.7 1 0 0 0 0 1 1
+## 83 1999 97 13000000 2.4 1 0 0 0 0 1 0
+## 84 2000 106 600000 4.6 0 1 0 1 0 0 1
+## 85 2003 97 10000000 4.8 0 0 1 0 0 0 0
+## 86 2003 102 500000 3.0 1 0 0 0 0 0 1
+## 87 2003 95 33000000 7.0 1 0 0 0 0 1 0
+## 88 1997 139 70000000 6.6 0 1 0 0 0 0 1
+## 89 1995 102 20000000 6.2 0 1 0 0 0 0 1
+## 90 2001 127 52500000 7.7 0 1 0 0 0 0 1
+## 91 2001 101 33000000 5.3 0 0 1 1 0 0 0
+## 92 2002 93 12000000 5.1 0 0 1 0 0 1 0
+## 93 2003 127 60000000 7.1 0 1 0 0 0 0 1
+## 94 1995 86 1000000 1.6 0 0 1 0 0 0 0
+## 95 2003 110 36000000 5.4 0 0 1 1 0 0 1
+## 96 2001 132 48000000 6.2 0 1 0 0 0 1 1
+## 97 1992 135 10000000 6.5 0 0 1 0 0 0 1
+## 98 1997 87 1000000 5.3 0 0 1 0 0 1 1
+## 99 2005 145 130000000 7.0 0 0 1 1 0 0 1
+## 100 2000 103 40000000 4.7 0 1 0 0 0 0 1
+## 101 1995 98 5000000 5.4 0 0 1 0 0 0 1
+## 102 2001 100 11000000 7.4 0 0 1 0 0 0 1
+## 103 1995 94 6100000 7.1 0 0 1 0 0 1 1
+## 104 2004 106 22000000 7.0 0 0 1 0 0 1 0
+## 105 2002 83 15000000 5.1 0 0 1 1 0 0 0
+## 106 2000 118 10000000 6.2 0 1 0 0 0 0 1
+## 107 2002 125 30000000 7.3 0 0 1 0 0 1 1
+## 108 2002 120 120000000 7.0 1 0 0 1 0 0 0
+## 109 2000 123 82000000 5.9 0 1 0 1 0 0 0
+## 110 1997 101 35000000 3.6 1 0 0 1 0 0 0
+## 111 2000 102 850000 6.4 0 0 1 0 0 0 1
+## 112 1998 172 53000000 5.6 0 0 1 0 0 0 1
+## 113 2004 103 15000000 4.3 1 0 0 0 0 0 1
+## 114 2005 96 30000000 3.8 0 0 1 1 0 0 0
+## 115 1998 90 800000 3.9 1 0 0 0 0 0 0
+## 116 2001 97 400000 5.2 0 0 1 0 0 1 1
+## 117 1968 140 5000000 5.6 0 1 0 0 0 0 1
+## 118 1995 113 11000000 6.0 0 0 1 0 0 1 1
+## 119 1998 77 250000 2.7 0 0 1 0 0 0 0
+## 120 2000 117 90000000 5.7 0 1 0 1 0 0 0
+## 121 1998 153 140000000 5.7 0 1 0 1 0 0 0
+## 122 1998 89 60000000 3.4 0 1 0 1 0 0 0
+## 123 2001 90 198000 4.8 0 0 1 0 0 1 0
+## 124 1999 107 6000000 5.6 0 0 1 0 0 0 0
+## 125 2002 118 46000000 7.3 0 0 1 0 0 0 1
+## 126 1999 127 36000000 6.7 0 1 0 0 0 0 1
+## 127 1970 131 1000000 7.0 0 1 0 0 0 0 1
+## 128 2002 121 139000000 7.4 0 1 0 1 0 0 0
+## 129 2001 90 20000 3.5 0 0 1 0 0 0 1
+## 130 2001 86 14000000 4.9 0 1 0 0 0 1 0
+## 131 1994 108 5000000 7.7 0 0 1 0 0 0 1
+## 132 2002 85 80000 4.6 0 0 1 0 0 0 1
+## 133 1995 131 90000000 7.0 0 0 1 1 0 0 0
+## 134 1999 109 15000000 4.5 0 0 1 0 0 0 0
+## 135 2004 114 30000000 5.0 0 0 1 1 0 0 0
+## 136 1997 133 80000000 7.1 0 0 1 1 0 0 1
+## 137 1999 94 4000000 5.3 0 0 1 0 0 1 0
+## 138 1999 105 14000000 6.6 0 0 1 0 0 0 1
+## 139 2002 93 30000000 8.1 0 1 0 1 0 0 1
+## 140 2004 118 24000000 6.7 0 1 0 0 0 0 1
+## 141 1998 119 10000000 8.4 0 0 1 0 0 0 1
+## 142 1995 99 60000000 4.9 0 0 1 1 0 0 1
+## 143 2001 93 25000000 4.6 0 0 1 0 0 1 0
+## 144 1997 118 38000000 6.1 0 0 1 1 0 0 0
+## 145 1999 107 2500000 6.9 0 0 1 0 0 0 1
+## 146 1999 118 52000000 7.3 0 0 1 0 0 1 1
+## 147 2000 93 13000000 5.9 1 0 0 0 0 1 0
+## 148 1998 87 30000000 5.8 0 0 1 1 0 0 0
+## 149 2002 97 70000000 5.3 0 1 0 1 0 1 0
+## 150 2001 124 30000000 7.1 0 0 1 0 0 0 1
+## 151 2004 131 100000000 6.6 1 0 0 1 0 0 0
+## 152 1998 103 12000000 6.5 0 0 1 0 0 1 1
+## 153 2000 110 24000000 6.6 0 0 1 0 0 1 1
+## 154 2003 108 20000000 7.4 0 1 0 0 0 1 0
+## 155 2002 113 29000000 7.1 0 0 1 0 0 0 1
+## 156 2002 99 47000000 6.3 0 1 0 0 0 0 1
+## 157 1997 103 45000000 4.5 0 0 1 1 0 0 0
+## 158 1970 124 11000000 6.6 1 0 0 0 0 0 1
+## 159 2000 113 20000000 7.6 0 0 1 0 0 1 1
+## 160 1997 98 85000000 4.7 0 1 0 0 0 1 0
+## 161 1969 92 43000 5.2 0 0 1 0 0 1 0
+## 162 2002 86 12000000 6.1 0 0 1 0 0 1 0
+## 163 1998 96 14000000 5.4 0 0 1 0 0 1 0
+## 164 1999 98 3500000 4.8 0 0 1 0 0 0 1
+## 165 2000 109 45000000 6.2 0 1 0 0 0 1 0
+## 166 2004 92 16000000 3.2 0 0 1 0 0 1 0
+## 167 2003 109 10000000 5.3 0 0 1 0 0 1 1
+## 168 1999 107 55000000 8.2 0 1 0 0 0 0 1
+## 169 1997 87 4000000 4.2 0 0 1 0 0 1 1
+## 170 2003 97 8000000 5.0 0 0 1 0 0 0 0
+## 171 2001 85 14000000 4.6 0 0 1 0 0 0 0
+## 172 2001 131 57000000 5.9 0 0 1 0 0 0 1
+## 173 1996 101 15000000 5.9 0 0 1 0 0 1 1
+## 174 2004 90 75000000 5.9 1 0 0 1 1 1 0
+## 175 2002 109 12500000 6.7 0 1 0 0 0 0 1
+## 176 2003 87 35000000 5.6 1 0 0 1 0 1 0
+## 177 2004 94 5000000 5.0 0 0 1 0 0 0 1
+## 178 2000 100 1000000 2.7 0 0 1 0 0 1 0
+## 179 1997 119 23000000 6.3 0 0 1 0 0 0 1
+## 180 2001 109 12000000 7.1 0 0 1 0 0 0 1
+## 181 1998 122 25000000 7.5 0 0 1 0 0 1 1
+## 182 1995 123 11000000 6.8 0 0 1 0 0 0 1
+## 183 1998 178 90000000 6.6 0 1 0 0 0 0 1
+## 184 1997 96 20000000 7.1 0 0 1 0 0 1 0
+## 185 2002 103 950000 5.5 1 0 0 0 0 1 1
+## 186 2003 90 8800000 6.0 0 0 1 0 0 0 0
+## 187 1995 98 8000000 6.4 0 0 1 0 0 0 0
+## 188 1999 72 400000 2.2 0 0 1 0 0 0 0
+## 189 2003 84 45000000 5.3 0 1 0 0 0 1 0
+## 190 1995 78 250000 3.3 0 0 1 0 0 0 0
+## 191 1972 108 12000 6.1 0 0 0 0 0 1 0
+## 192 2003 91 11500000 4.4 0 0 1 0 0 0 0
+## 193 2001 89 28000000 6.1 0 1 0 0 0 1 0
+## 194 2002 150 35000000 8.5 0 0 1 0 0 0 1
+## 195 1996 99 350000 2.0 0 0 1 0 0 0 0
+## 196 1995 90 30000000 4.9 0 1 0 0 0 1 0
+## 197 2003 86 11000000 4.5 0 1 0 0 0 0 0
+## 198 1993 97 3500000 7.3 0 0 1 1 0 0 1
+## 199 2000 114 34000000 5.2 0 1 0 0 0 0 1
+## 200 1995 127 58000000 6.1 1 0 0 0 0 1 1
+## 201 1999 124 3500000 5.3 0 0 1 0 0 0 1
+## 202 1997 139 50000000 7.7 0 1 0 0 0 1 1
+## 203 2002 81 10000000 7.3 0 0 1 0 0 0 0
+## 204 2000 86 1500000 5.4 0 0 1 0 0 0 1
+## 205 1977 125 11000000 8.8 1 0 0 1 0 0 0
+## 206 2000 94 75000000 6.4 1 0 0 1 1 0 0
+## 207 2002 141 52000000 7.6 0 1 0 0 0 0 1
+## 208 1999 156 62000000 6.4 0 0 1 0 0 0 1
+## 209 2002 110 3800000 6.8 0 0 1 0 0 0 1
+## 210 2001 105 38000000 5.8 0 0 1 0 0 1 1
+## 211 1999 93 34200000 5.9 0 1 0 0 0 1 0
+## 212 2003 101 25000000 5.3 0 0 1 1 0 0 0
+## 213 1996 111 15000000 7.0 0 0 1 0 0 0 0
+## 214 2005 128 80000000 6.6 0 1 0 0 0 0 1
+## 215 2004 112 10000000 7.0 0 0 1 0 0 1 1
+## 216 2003 95 45000000 4.4 0 1 0 0 0 1 0
+## 217 1998 89 65000 4.2 0 0 1 0 0 1 0
+## 218 2000 112 95000000 5.3 0 0 1 0 0 0 0
+## 219 2000 126 9000000 6.9 0 0 1 0 0 0 1
+## 220 1995 112 7000000 7.4 0 0 1 0 0 1 1
+## 221 1997 89 29000000 5.6 1 0 0 0 0 1 0
+## 222 1997 119 110000000 6.4 0 1 0 1 0 0 0
+## 223 2002 99 250000 6.8 0 0 1 0 0 0 0
+## 224 2001 98 5000000 4.2 0 0 1 1 0 0 0
+## 225 2004 102 45000000 5.4 0 1 0 1 0 0 0
+## 226 2002 115 45000000 7.4 0 1 0 0 0 0 1
+## 227 2001 104 3000000 7.2 0 0 1 0 0 0 1
+## 228 1998 114 55000000 6.2 0 1 0 0 0 0 1
+## 229 1998 95 25000000 4.6 0 0 1 1 0 0 0
+## 230 1999 145 38000000 7.3 0 0 1 0 0 0 1
+## 231 2002 92 60000000 5.3 0 1 0 1 0 0 0
+## 232 1999 97 55000000 6.4 0 1 0 0 0 1 0
+## 233 2004 91 18000000 4.5 1 0 0 1 0 1 0
+## 234 1999 137 50000000 6.1 0 1 0 0 0 0 1
+## 235 2004 90 70000 4.2 0 0 1 0 0 0 1
+## 236 1999 89 2000000 2.8 0 0 1 0 0 0 0
+## 237 1999 117 21500000 7.1 0 0 1 0 0 0 1
+## 238 2003 89 40000000 5.7 0 1 0 0 0 1 0
+## 239 1969 158 20000000 6.5 0 1 0 0 0 1 0
+## 240 2001 99 6000000 6.7 0 0 1 0 0 0 1
+## 241 2000 108 10000000 6.0 0 1 0 0 0 1 1
+## 242 2002 86 84000000 4.8 1 0 0 0 0 1 0
+## 243 1996 118 44000000 5.3 0 0 1 0 0 0 1
+## 244 2002 94 6000000 7.7 1 0 0 0 0 0 1
+## 245 1999 88 18000000 5.6 0 0 1 0 0 1 0
+## 246 1999 85 1200000 6.2 0 0 1 0 0 1 1
+## 247 2001 119 100000000 5.6 0 1 0 1 0 0 0
+## 248 1998 89 19000000 4.4 0 0 1 1 0 0 0
+## 249 1996 153 75000000 6.1 0 1 0 1 0 0 0
+## 250 2003 120 2000000 3.4 0 1 0 0 0 0 0
+## 251 2004 90 28000000 5.7 0 1 0 0 0 1 0
+## 252 2005 97 40000000 5.2 0 1 0 1 0 1 0
+## 253 1996 99 4000000 6.6 0 0 1 0 0 0 1
+## 254 1998 130 80000000 4.7 0 1 0 1 0 0 0
+## 255 2004 99 2000000 5.8 0 0 1 0 0 0 1
+## 256 2001 93 13000000 6.1 0 0 1 0 0 1 1
+## 257 1994 105 4000000 7.3 0 0 1 0 0 1 0
+## 258 2002 95 5000000 6.9 1 0 0 0 0 1 0
+## 259 2001 108 6000000 6.3 0 1 0 0 0 1 0
+## 260 1996 92 10000000 6.8 0 1 0 0 0 1 0
+## 261 2004 100 850000 6.3 0 0 1 0 0 0 1
+## 262 2003 87 3000000 6.1 0 0 1 0 0 0 1
+## 263 1995 130 80000000 6.8 0 1 0 1 0 0 0
+## 264 1996 98 7000000 8.2 0 0 1 0 0 0 1
+## 265 2001 112 48000000 6.5 0 1 0 0 0 1 0
+## 266 1998 87 12000000 5.9 0 1 0 0 0 1 0
+## 267 2003 88 4700000 4.5 0 1 0 1 0 1 0
+## 268 2000 96 250000 6.6 0 0 1 0 0 1 1
+## 269 1999 96 7000000 6.1 0 0 1 0 0 1 1
+## 270 2002 104 35000000 4.7 0 0 1 0 0 0 0
+## 271 2001 115 40000000 5.5 0 1 0 0 0 1 1
+## 272 1995 128 5500000 7.0 0 0 1 0 0 0 1
+## 273 1998 93 1000000 5.1 0 0 1 0 0 1 1
+## 274 1996 114 55000000 5.4 0 0 1 0 0 0 0
+## 275 1998 91 13000000 5.7 0 0 1 1 0 1 0
+## 276 1994 102 26000000 3.7 0 1 0 1 0 0 0
+## 277 2001 94 16000000 5.0 1 0 0 0 0 1 0
+## 278 1997 105 46000000 6.4 0 1 0 0 0 1 0
+## 279 1997 84 17000000 3.8 0 1 0 0 0 1 0
+## 280 2002 99 29000000 4.6 0 1 0 0 0 1 0
+## 281 2001 98 25000000 6.2 0 0 1 1 0 0 1
+## 282 2001 133 87000000 6.2 0 0 1 0 0 0 0
+## 283 2005 94 74000000 1.9 1 0 0 1 0 1 0
+## 284 1998 90 11000000 6.2 0 0 1 1 0 0 1
+## 285 2000 94 40000000 4.4 0 1 0 0 0 1 1
+## 286 2003 112 15000000 6.2 0 1 0 0 0 0 1
+## 287 2003 83 46000 7.5 0 1 0 0 0 0 1
+## 288 1993 96 11000000 7.4 0 0 1 1 0 1 0
+## 289 1997 125 110000000 3.6 0 1 0 1 0 0 0
+## 290 1966 93 360000 4.7 0 0 1 1 0 0 1
+## 291 2004 108 70000000 5.7 0 0 1 0 0 1 1
+## 292 2003 106 75000000 6.0 0 1 0 0 0 1 0
+## 293 1999 92 11000000 4.2 0 0 1 1 0 0 0
+## 294 2003 110 78000000 5.4 0 1 0 1 0 0 0
+## 295 1989 123 787000 7.2 0 0 1 0 0 0 1
+## 296 2001 102 48000000 5.8 0 1 0 0 0 1 0
+## 297 2003 90 14000000 4.1 0 0 1 0 0 1 0
+## 298 1997 107 12000000 5.8 0 0 1 0 0 1 1
+## 299 1966 193 12000000 7.6 0 1 0 0 0 0 1
+## 300 2002 106 12000000 5.7 0 0 1 0 0 0 1
+## 301 2001 91 53000000 5.4 0 1 0 0 0 0 1
+## 302 2001 96 16000000 4.2 0 0 1 0 0 0 0
+## 303 2003 97 26000000 6.9 1 0 0 0 0 1 1
+## 304 2004 175 150000000 5.5 0 0 1 0 0 0 1
+## 305 2000 87 10000000 6.0 0 0 1 0 0 1 0
+## 306 2000 109 33000000 6.1 0 0 1 0 0 0 0
+## 307 1999 121 68000000 5.8 0 1 0 1 0 1 0
+## 308 2001 84 11000000 5.3 0 1 0 0 0 1 0
+## 309 2001 93 6000000 5.8 0 0 1 0 0 1 0
+## 310 1996 101 21500000 6.3 0 1 0 0 0 1 0
+## 311 1999 95 15000000 6.0 0 0 1 0 0 1 0
+## 312 1999 111 3500000 6.3 0 0 1 0 0 1 0
+## 313 2002 99 45000000 6.6 0 0 1 0 0 0 1
+## 314 1999 98 10000000 5.2 0 0 1 0 0 0 1
+## 315 1997 115 50000000 6.0 0 1 0 0 0 0 1
+## 316 2002 118 1800000 7.0 0 0 1 0 0 0 1
+## 317 2002 94 40000000 4.0 0 1 0 1 0 0 0
+## 318 2001 96 7000000 4.0 0 0 1 1 0 0 0
+## 319 2002 108 38000000 5.8 0 1 0 0 0 1 1
+## 320 1995 92 200000 3.3 0 0 1 0 0 0 0
+## 321 1999 94 350000 5.5 0 0 1 0 0 0 1
+## 322 1992 128 40000000 7.1 0 0 1 0 0 0 1
+## 323 2002 87 3000000 7.0 0 1 0 0 0 1 1
+## 324 1999 95 4000000 3.7 0 0 1 1 0 0 0
+## 325 2002 96 12000000 7.1 0 0 1 0 0 0 1
+## 326 2000 88 1000000 6.9 0 0 1 0 0 1 1
+## 327 2004 91 100000 3.1 0 0 1 0 0 1 1
+## 328 1997 106 5000000 7.0 0 0 1 0 0 1 1
+## 329 2004 99 27000000 5.7 0 0 1 0 0 0 1
+## 330 2003 92 155000 4.5 0 0 1 1 0 0 1
+## 331 1998 117 25000000 6.8 0 1 0 0 0 0 1
+## 332 1998 84 13000000 3.5 0 0 1 0 0 1 0
+## 333 2000 94 15600000 6.3 0 0 1 0 0 1 0
+## 334 1955 111 1500000 7.8 0 1 0 0 0 0 1
+## 335 2004 127 200000000 7.9 0 1 0 1 0 0 0
+## 336 1998 92 4000000 6.1 0 0 1 1 0 0 1
+## 337 2004 95 19000000 5.4 0 1 0 0 0 1 0
+## 338 2001 130 1700000 7.4 0 0 1 0 0 0 1
+## 339 2000 135 10000000 6.3 0 0 1 0 0 1 1
+## 340 1992 99 1200000 8.3 0 0 1 0 0 0 0
+## 341 2001 165 107000000 6.4 0 0 1 0 0 0 1
+## 342 2001 83 45000000 4.2 0 0 1 0 0 1 0
+## 343 1979 202 31500000 8.5 0 0 1 1 0 0 1
+## 344 1997 104 104000000 5.6 0 1 0 1 0 0 1
+## 345 2001 96 22000000 5.4 0 0 1 0 0 1 0
+## 346 1996 111 40000000 6.1 0 0 1 0 0 0 1
+## 347 1997 110 40000000 5.3 0 0 1 0 0 0 0
+## 348 2004 95 57000000 4.4 1 0 0 1 0 1 0
+## 349 1999 102 85000000 6.1 0 0 1 1 0 0 0
+## 350 1995 140 62000000 7.5 1 0 0 0 0 0 1
+## 351 2004 108 60000000 6.6 0 1 0 0 0 0 1
+## 352 1997 97 25000000 5.5 0 0 1 1 0 1 0
+## 353 1996 88 2309723 5.5 0 0 1 0 0 1 0
+## 354 2001 105 30000000 6.3 0 0 1 0 0 1 0
+## 355 2000 95 16000000 5.4 0 1 0 0 0 1 0
+## 356 1956 208 6000000 6.6 1 0 0 0 0 0 1
+## 357 1998 104 1000000 6.7 0 0 1 0 0 1 1
+## 358 1996 106 70000000 6.1 0 1 0 1 0 1 0
+## 359 2002 106 30000000 6.0 0 0 1 0 0 0 0
+## 360 1999 102 500000 7.6 0 1 0 0 0 0 1
+## 361 2001 152 130000000 7.2 1 0 0 0 0 0 0
+## 362 2002 105 7000000 6.7 0 0 1 0 0 0 1
+## 363 1997 101 8000000 7.5 0 0 1 0 0 0 1
+## 364 2001 99 12000000 5.2 0 0 1 0 0 0 1
+## 365 1996 88 60000000 4.7 1 0 0 1 0 1 0
+## 366 2004 96 40000000 6.3 0 1 0 0 0 0 1
+## 367 1999 121 15000000 8.5 0 0 1 0 0 0 1
+## 368 2005 90 18000000 5.8 0 0 1 0 0 0 0
+## 369 2002 109 55000000 6.3 0 0 1 0 0 1 0
+## 370 1995 105 30250000 7.0 0 0 1 0 0 1 1
+## 371 2003 101 6800000 6.5 0 0 1 0 0 0 1
+## 372 2002 89 13000000 5.2 0 1 0 0 0 1 0
+## 373 1998 114 25000000 5.7 0 0 1 0 0 0 0
+## 374 2000 89 95000000 6.3 1 0 0 1 1 1 0
+## 375 1996 116 19000000 5.8 0 0 1 0 0 0 1
+## 376 2004 87 12000000 5.1 0 0 1 0 0 1 0
+## 377 2002 132 10000000 7.4 1 0 0 0 0 0 1
+## 378 2000 107 7300000 7.0 0 0 1 0 0 1 1
+## 379 2004 93 90000000 5.3 0 1 0 0 0 1 1
+## 380 1996 101 20000000 5.6 0 0 1 0 0 0 1
+## 381 1995 100 1750000 2.8 0 0 1 0 0 0 0
+## 382 2004 103 60000000 6.0 0 0 1 0 0 1 1
+## 383 1998 93 8500000 2.9 0 1 0 1 0 1 0
+## 384 2002 96 12000000 5.8 0 0 1 0 0 1 0
+## 385 2002 110 50000000 6.3 0 0 1 0 0 0 1
+## 386 2000 111 35000000 7.6 0 0 1 0 0 1 1
+## 387 1999 125 5000000 6.6 0 0 1 1 0 0 0
+## 388 2002 117 80000000 7.7 0 0 1 0 0 0 1
+## 389 2002 116 17500000 5.6 0 0 1 0 0 0 0
+## 390 2000 87 500000 7.1 0 0 1 0 0 0 1
+## 391 2001 126 92000000 7.0 0 0 1 1 0 0 1
+## 392 2005 124 130000000 5.8 0 1 0 1 0 1 0
+## 393 2003 97 15000000 6.8 0 0 1 0 0 0 1
+## 394 1999 188 37000000 8.0 0 0 1 0 0 0 1
+## 395 2000 98 23000000 6.6 0 0 1 0 0 0 0
+## 396 2001 120 45000000 7.3 0 0 1 0 0 0 1
+## 397 1996 100 13000000 5.8 1 0 0 0 0 1 1
+## 398 2001 92 28000000 6.1 0 0 1 1 0 1 0
+## 399 2004 90 42000000 5.8 0 1 0 0 0 1 0
+## 400 2000 98 9500000 5.2 0 0 1 0 0 1 0
+## 401 1998 124 40000000 7.5 0 1 0 0 0 1 1
+## 402 1995 112 4000000 5.8 0 0 1 0 0 0 1
+## 403 1998 96 5000000 5.6 0 0 1 0 0 1 1
+## 404 1998 93 3500000 3.2 0 0 1 0 0 1 0
+## 405 1996 111 1300000 7.4 1 0 0 0 0 0 1
+## 406 2002 82 25000000 4.7 0 1 0 0 0 1 1
+## 407 1998 121 17000000 7.6 0 0 1 0 0 0 1
+## 408 1970 112 3500000 7.8 0 0 1 0 0 1 1
+## 409 2001 142 90000000 7.6 0 0 1 1 0 0 1
+## 410 2000 130 15000000 6.0 0 0 1 0 0 0 1
+## 411 2000 100 1000000 4.3 0 0 1 0 0 1 0
+## 412 2001 97 26000000 7.0 0 0 1 0 0 1 0
+## 413 2002 90 13000000 5.3 1 0 0 0 0 1 0
+## 414 1999 106 40000000 5.9 0 1 0 0 0 0 1
+## 415 2001 113 7000000 6.5 1 0 0 0 0 0 1
+## 416 1995 90 12000000 5.6 0 1 0 0 0 1 0
+## 417 1991 128 35000000 7.1 0 0 1 0 0 0 1
+## 418 1999 106 2000000 5.3 0 0 1 0 0 1 0
+## 419 2002 93 1500000 5.1 0 0 1 0 0 0 0
+## 420 2003 96 8000000 4.1 0 0 1 1 0 0 0
+## 421 2003 139 26000000 7.5 0 0 1 0 0 0 1
+## 422 1995 95 15000000 7.0 0 0 1 0 0 1 0
+## 423 1997 117 3500000 6.4 0 0 1 1 0 1 0
+## 424 1998 121 12000000 7.2 0 0 1 0 0 0 1
+## 425 2001 104 22000000 3.8 0 1 0 0 0 0 0
+## 426 2001 97 2500000 6.9 1 0 0 0 0 0 1
+## 427 2001 101 3000000 6.8 0 0 1 0 0 0 1
+## 428 1995 109 50000000 4.4 0 1 0 1 0 0 0
+## 429 1998 87 7300 5.3 0 0 1 1 0 1 0
+## 430 2001 90 10000000 5.4 0 0 1 0 0 0 1
+## 431 1996 116 5000000 6.5 0 0 1 0 0 1 1
+## 432 1996 117 45000000 5.7 0 1 0 0 0 1 0
+## 433 2002 98 2500000 5.2 1 0 0 1 0 0 1
+## 434 2004 98 40000000 4.8 0 1 0 0 0 1 0
+## 435 2001 90 28000000 6.6 0 1 0 0 0 1 0
+## 436 1996 99 40000000 4.0 0 1 0 0 0 0 0
+## 437 2004 92 500000 5.9 1 0 0 0 0 1 0
+## 438 2004 132 30000000 8.3 0 1 0 0 0 0 1
+## 439 1997 144 57000000 7.0 0 0 1 0 0 0 1
+## 440 2000 111 25000000 6.4 0 0 1 0 0 0 1
+## 441 2001 102 38000000 5.6 0 0 1 0 0 0 1
+## 442 2003 107 850000 7.3 0 0 1 0 0 1 1
+## 443 1998 119 8000000 3.7 0 0 1 0 0 0 0
+## 444 1999 104 21000000 4.4 0 0 1 0 0 0 0
+## 445 2000 125 36000000 6.4 0 1 0 0 0 0 1
+## 446 1998 121 14000000 7.1 0 0 1 0 0 0 1
+## 447 1999 108 12000000 6.7 0 0 1 0 0 1 1
+## 448 2000 82 3000000 4.4 0 0 1 0 0 1 0
+## 449 2001 89 16000000 5.2 0 0 1 0 0 1 0
+## 450 2001 108 30000000 6.0 0 1 0 0 0 0 1
+## 451 2004 104 30000000 5.7 0 1 0 0 0 1 1
+## 452 1999 142 22000000 6.5 0 0 1 0 0 0 1
+## 453 2000 107 40000000 5.0 0 0 1 0 0 0 0
+## 454 2000 129 32000000 6.6 0 0 1 0 0 0 1
+## 455 1989 137 9000000 7.9 0 1 0 1 0 0 1
+## 456 1998 116 5000000 7.0 0 0 1 0 0 1 0
+## 457 2000 92 14000000 4.9 0 0 1 0 0 1 0
+## 458 2002 88 2000000 4.7 0 0 1 0 0 1 0
+## 459 1995 118 23000000 6.4 0 0 1 1 0 1 0
+## 460 1998 127 30000000 7.0 0 0 1 0 0 0 1
+## 461 2000 102 8000000 6.8 0 0 1 0 0 0 1
+## 462 1996 117 46000000 6.7 0 0 1 1 0 0 1
+## 463 2003 111 55000000 8.3 0 0 1 1 0 0 1
+## 464 1995 188 60000000 7.9 0 0 1 1 0 0 1
+## 465 2000 164 110000000 6.8 0 0 1 1 0 0 1
+## 466 1995 104 3500000 5.7 0 0 1 0 0 0 1
+## 467 2000 98 3000000 5.2 0 0 1 0 0 1 1
+## 468 1996 106 55000000 5.1 0 1 0 1 0 0 1
+## 469 2002 96 11000000 7.3 0 0 1 0 0 0 1
+## 470 2002 119 75000000 7.3 0 1 0 1 0 0 1
+## 471 1999 98 1700000 6.4 0 1 0 0 0 1 0
+## 472 2001 108 22000000 6.5 0 0 1 0 0 0 0
+## 473 1998 90 2000000 2.8 0 0 1 0 0 0 0
+## 474 2001 86 38000000 5.1 0 1 0 0 0 0 1
+## 475 1997 117 55000000 5.2 0 0 1 1 0 1 1
+## 476 2002 78 150000 6.3 0 1 0 0 0 1 1
+## 477 1996 117 50000000 3.8 0 0 1 0 0 1 1
+## 478 2002 100 35000000 6.2 0 0 1 1 0 0 0
+## 479 2003 152 83000000 7.4 0 0 1 0 0 0 1
+## 480 2003 147 6000000 7.7 0 0 1 0 0 0 1
+## 481 2000 116 51000000 6.0 0 0 1 0 0 1 0
+## 482 2002 108 60000000 6.3 0 0 1 0 0 0 1
+## 483 2003 109 12000000 6.1 0 0 1 0 0 0 1
+## 484 2000 120 15000000 8.2 0 1 0 1 0 0 0
+## 485 1998 93 24000000 3.4 1 0 0 0 0 1 0
+## 486 2003 92 3000000 5.5 0 0 1 0 0 0 0
+## 487 1995 91 3500000 6.7 0 0 1 0 0 1 1
+## 488 1998 124 25000000 7.6 0 0 1 0 0 0 1
+## 489 2003 107 76000000 5.1 0 1 0 1 0 0 0
+## 490 1999 115 6500000 6.5 0 0 1 0 0 0 0
+## 491 1998 85 71500000 5.4 0 1 0 0 0 1 0
+## 492 1998 100 1800000 4.1 0 0 1 0 0 0 0
+## 493 2002 91 15600000 3.9 0 1 0 0 0 1 0
+## 494 2001 110 40000000 6.2 0 1 0 0 0 1 0
+## 495 1998 89 25000000 5.2 0 0 1 0 0 1 0
+## 496 2005 96 43000000 4.9 0 1 0 1 0 0 0
+## 497 2002 94 400000 2.7 0 0 1 0 0 1 0
+## 498 2002 125 50000000 6.6 0 0 1 0 0 0 1
+## 499 1971 82 2000000 7.1 0 1 0 0 0 1 0
+## 500 1995 103 17000000 6.5 1 0 0 0 0 1 0
+## 501 2003 113 18000000 6.7 0 1 0 0 0 1 1
+## 502 1997 122 5000000 5.4 0 0 1 0 0 0 1
+## 503 1996 86 1000000 6.6 0 0 1 0 0 1 1
+## 504 2001 101 6000000 4.1 0 0 1 0 0 0 0
+## 505 2000 101 10000000 5.4 0 0 1 0 0 1 0
+## 506 2004 99 4000000 7.9 0 0 1 0 0 1 0
+## 507 2004 74 10000000 5.6 1 0 0 0 1 1 0
+## 508 2000 119 73000000 2.4 0 1 0 1 0 0 0
+## 509 2002 107 5000000 7.6 0 0 1 0 0 0 1
+## 510 2001 135 60000000 7.8 0 1 0 0 0 0 1
+## 511 2002 102 7500000 5.9 0 0 1 0 0 1 1
+## 512 1999 92 7000000 6.3 0 0 1 0 0 0 1
+## 513 1984 106 300000 6.7 0 0 1 0 0 1 1
+## 514 2004 91 3500000 6.0 0 1 0 1 0 1 0
+## 515 2003 92 24000000 6.7 0 0 1 0 0 1 0
+## 516 2003 98 40000000 5.8 1 0 0 0 0 1 1
+## 517 2003 103 55000000 6.3 0 0 1 0 0 1 0
+## 518 2003 121 54000000 2.3 0 0 1 0 0 1 0
+## 519 1999 116 70000000 5.4 1 0 0 0 0 1 0
+## 520 2001 99 5500000 4.9 0 0 1 0 0 0 1
+## 521 1971 87 700000 4.9 0 1 0 0 0 0 0
+## 522 2002 86 80000000 7.3 1 0 0 0 1 1 1
+## 523 1995 104 25000000 4.6 0 0 1 1 0 1 0
+## 524 1990 93 1500000 5.2 0 0 1 1 0 0 0
+## 525 2002 89 15000000 4.3 0 0 1 0 0 0 0
+## 526 1998 82 13000000 5.9 0 1 0 0 0 1 0
+## 527 2004 97 16000000 5.4 0 0 1 0 0 0 1
+## 528 1997 156 15000000 7.6 0 0 1 0 0 0 1
+## 529 2002 110 4000000 6.7 0 0 1 0 0 1 1
+## 530 2004 84 20000000 5.6 0 1 0 0 0 0 1
+## 531 1997 113 23000000 4.8 0 1 0 0 0 1 0
+## 532 1990 87 10000000 6.0 0 0 1 0 0 0 1
+## 533 1996 86 4000000 4.2 0 0 1 0 0 0 0
+## 534 1999 126 24000000 7.5 0 1 0 0 0 0 1
+## 535 2003 251 94000000 9.0 0 1 0 1 0 0 0
+## 536 2000 120 15000000 6.4 0 1 0 0 0 1 1
+## 537 1996 96 200000 7.6 0 0 1 0 0 1 1
+## 538 1995 132 50000000 5.7 0 0 1 1 0 0 0
+## 539 1996 110 75000000 6.6 0 1 0 1 0 0 0
+## 540 2002 152 100000000 7.3 1 0 0 0 0 0 0
+## 541 1996 115 100000000 5.8 0 0 1 1 0 0 1
+## 542 2003 86 35000 6.1 0 1 0 0 0 0 0
+## 543 2002 135 3300000 8.7 0 0 1 0 0 0 1
+## 544 2004 141 130000000 7.8 1 0 0 0 0 0 0
+## 545 2002 103 20000000 4.5 0 1 0 1 0 0 0
+## 546 1995 96 90000000 4.6 0 0 1 1 0 0 0
+## 547 1992 87 1400000 5.5 0 0 1 0 0 1 0
+## 548 2003 100 7500000 6.4 0 0 1 0 0 0 1
+## 549 1999 115 12000000 5.5 0 0 1 0 0 1 0
+## 550 2000 132 6000000 7.1 0 0 1 0 0 0 1
+## 551 1997 109 5000000 7.2 0 0 1 0 0 0 1
+## 552 2000 124 75000000 5.6 0 1 0 1 0 0 0
+## 553 2002 105 7500000 7.3 0 0 1 0 0 0 1
+## 554 2000 125 60000000 6.5 0 1 0 0 0 1 1
+## 555 1994 101 16000000 6.6 0 1 0 0 0 1 0
+## 556 2004 118 11000000 7.6 0 0 1 0 0 0 1
+## 557 2004 123 16000000 8.0 0 0 1 0 0 1 1
+## 558 2001 95 5000000 6.3 0 0 1 0 0 0 1
+## 559 1979 116 11000000 8.3 0 0 1 0 0 0 0
+## 560 2004 86 100000 6.7 0 1 0 0 0 0 0
+## 561 2004 129 12000000 7.6 0 0 1 0 0 0 1
+## 562 1999 102 21000000 5.5 0 1 0 0 0 1 1
+## 563 1998 112 14000000 6.4 0 0 1 0 0 0 1
+## 564 2000 94 92000000 5.8 0 1 0 1 0 1 0
+## 565 2003 88 18000000 4.7 1 0 0 0 0 1 1
+## 566 2002 98 30000000 3.9 0 1 0 1 0 0 0
+## 567 2001 123 80000000 6.7 0 1 0 0 0 1 1
+## 568 2002 114 35000000 6.4 0 0 1 0 0 0 0
+## 569 2002 96 15000000 6.5 1 0 0 0 0 0 1
+## 570 2005 118 53000000 5.5 0 1 0 0 0 1 0
+## 571 2003 79 114000 4.2 0 0 1 0 0 1 0
+## 572 2002 114 19000000 7.9 0 0 1 0 0 1 1
+## 573 2004 162 185000000 7.1 0 0 1 1 0 0 1
+## 574 1995 122 11000000 7.6 0 0 1 0 0 0 1
+## 575 2002 89 10000000 3.8 0 0 1 0 0 1 0
+## 576 1992 120 11000000 7.2 0 0 1 0 0 1 0
+## 577 1996 139 50000000 7.3 0 0 1 0 0 1 1
+## 578 2000 119 35000000 5.6 0 0 1 1 0 1 0
+## 579 1998 134 23000000 7.2 0 0 1 0 0 1 0
+## 580 2002 94 1500000 6.5 0 0 1 0 0 0 0
+## 581 2000 109 1800000 7.2 0 1 0 0 0 0 1
+## 582 2000 126 60000000 6.4 0 1 0 0 0 1 1
+## 583 1995 115 8000000 6.6 0 0 1 0 0 0 1
+## 584 1995 105 1500000 4.7 0 0 1 0 0 0 1
+## 585 2001 97 165000 5.2 0 0 1 0 0 0 0
+## 586 1995 84 2000000 4.2 0 0 1 0 0 1 0
+## 587 2002 90 1000000 6.6 0 0 1 0 0 0 1
+## 588 2001 95 6000000 5.9 0 0 1 0 0 1 1
+## 589 2000 88 76000000 4.3 1 0 0 0 1 1 0
+## 590 1998 136 65000000 6.8 0 1 0 1 0 1 0
+## 591 2002 85 25000000 6.0 0 1 0 1 0 1 0
+## 592 2003 97 25000000 6.1 0 0 1 1 0 0 0
+## 593 2002 100 5000000 4.8 0 0 1 0 0 1 1
+## 594 1996 79 38000000 6.6 1 0 0 0 1 0 0
+## 595 2002 117 20000000 6.9 0 1 0 0 0 0 1
+## 596 1999 117 12000000 6.7 1 0 0 0 0 1 1
+## 597 2000 97 15000000 3.8 0 0 1 0 0 0 0
+## 598 1999 97 15000000 5.6 0 1 0 0 0 1 0
+## 599 1994 101 700000 7.1 0 0 1 0 0 1 1
+## 600 1999 113 48000000 6.7 0 0 1 0 0 1 0
+## 601 2001 132 22000000 7.2 0 1 0 0 0 0 1
+## 602 1995 212 50000000 6.8 0 0 1 0 0 0 1
+## 603 1997 90 100000 7.6 0 0 1 0 0 0 0
+## 604 1997 94 17000000 7.0 0 1 0 1 0 1 0
+## 605 1999 96 30000000 3.7 0 1 0 1 0 0 0
+## 606 2001 98 15000000 7.0 0 0 1 0 0 1 1
+## 607 1999 95 33000000 6.5 0 1 0 1 0 1 0
+## 608 1998 103 3000000 4.8 0 0 1 0 0 0 1
+## 609 1999 106 1200000 5.3 0 0 1 0 0 0 0
+## 610 2004 98 60000000 4.5 1 0 0 0 0 1 0
+## 611 2000 143 90000000 7.3 0 1 0 0 0 0 1
+## 612 2001 87 10000000 5.7 0 1 0 0 0 1 0
+## 613 2001 104 28000000 6.1 0 0 1 0 0 0 1
+## 614 1999 100 50000000 6.8 0 0 1 0 0 0 0
+## 615 2002 95 25000000 7.5 0 0 1 0 0 1 1
+## 616 1999 110 12000000 4.2 0 0 1 0 0 1 0
+## 617 1996 114 5500000 7.1 0 0 1 0 0 0 1
+## 618 2005 124 45500000 8.3 0 0 1 1 0 0 0
+## 619 1998 120 9000000 7.6 0 0 1 0 0 0 1
+## 620 2004 86 400000 7.2 1 0 0 0 0 1 0
+## 621 2004 92 5000000 7.1 0 1 0 0 0 1 1
+## 622 1999 110 2000000 7.1 0 0 1 0 0 0 1
+## 623 1997 89 3500000 4.2 0 0 1 1 0 0 0
+## 624 2003 89 7000000 5.7 0 0 1 0 0 1 0
+## 625 2004 99 40000000 4.3 0 1 0 0 0 1 0
+## 626 2002 109 16000000 6.9 0 1 0 0 0 0 1
+## 627 2000 84 23000000 5.3 0 1 0 0 0 1 0
+## 628 1974 97 25000 7.1 0 0 0 0 0 1 0
+## 629 1997 121 110000000 3.3 0 1 0 1 0 0 0
+## 630 2002 99 30000000 4.9 1 0 0 0 0 1 0
+## 631 1995 108 35000000 5.4 0 0 1 1 0 0 1
+## 632 1995 95 1300000 5.0 0 0 1 0 0 0 1
+## 633 1997 101 36000000 7.6 0 1 0 0 0 0 1
+## 634 2003 99 5100000 5.5 0 0 1 0 0 0 1
+## 635 2002 104 2500000 6.8 0 0 1 0 0 0 1
+## 636 1994 127 18000000 8.0 0 0 1 0 0 1 1
+## 637 1998 69 6000 7.6 0 0 1 0 0 0 0
+## 638 2005 90 1000000 3.0 0 0 1 0 0 0 0
+## 639 2001 106 38000000 5.7 0 1 0 1 0 0 0
+## 640 2000 95 2000000 3.2 0 0 1 0 0 0 0
+## 641 1999 124 24000000 5.1 0 0 1 0 0 1 1
+## 642 2000 130 120000000 6.2 0 1 0 1 0 0 1
+## 643 2004 124 65000000 5.7 0 0 1 1 0 0 0
+## 644 2002 80 16000000 2.9 1 0 0 0 0 1 0
+## 645 1998 91 2000000 4.1 0 0 1 0 0 0 0
+## 646 1999 88 15000000 5.2 0 1 0 0 0 1 1
+## 647 2001 120 1200000 6.6 0 0 1 0 0 0 1
+## 648 2002 76 10000000 4.8 1 0 0 0 1 1 0
+## 649 1995 88 800000 7.4 0 0 1 0 0 1 1
+## 650 1999 103 32000000 6.0 0 0 1 0 0 0 1
+## 651 2004 109 28000000 7.4 0 0 1 1 0 0 1
+## 652 1998 97 70000000 5.5 0 0 1 1 0 0 1
+## 653 1999 159 65000000 7.0 0 0 1 0 0 0 1
+## 654 2001 101 31000000 6.7 0 1 0 0 0 0 1
+## 655 2003 98 50000000 6.2 0 0 1 0 0 0 1
+## 656 2003 98 10000000 4.1 0 0 1 1 0 0 1
+## 657 2001 120 42000000 6.1 0 0 1 0 0 0 1
+## 658 2001 111 35000000 6.9 0 0 1 0 0 0 1
+## 659 1998 98 35000000 4.5 0 0 1 1 0 0 0
+## 660 2004 97 17000000 7.0 0 1 0 0 0 1 1
+## 661 1996 135 5000000 7.7 0 0 1 0 0 0 1
+## 662 2000 140 10000000 6.9 1 0 0 0 0 0 1
+## 663 1999 107 170000000 4.0 0 1 0 1 0 1 0
+## 664 1997 100 18000000 5.7 0 0 1 0 0 1 1
+## 665 1993 154 42000000 6.6 0 0 1 0 0 0 1
+## 666 1999 86 4000000 6.1 0 0 1 0 0 1 0
+## 667 2003 117 80000000 5.9 0 1 0 1 0 0 0
+## 668 1998 87 6000000 6.4 0 0 1 0 0 1 0
+## 669 1938 102 1900000 8.2 1 0 0 1 0 0 0
+## 670 2001 91 7000000 6.4 0 0 1 0 0 1 1
+## 671 2000 155 103000000 8.0 0 0 1 1 0 0 1
+## 672 1986 116 16000000 7.1 0 0 1 1 0 0 0
+## 673 2001 98 12000 5.7 0 1 0 0 0 1 1
+## 674 2001 91 250000 6.9 0 0 1 0 0 1 1
+## 675 2003 108 1000000 6.8 0 0 1 0 0 0 1
+## 676 1998 131 60000000 6.1 0 1 0 1 0 0 1
+## 677 2000 103 14000000 6.1 0 0 1 0 0 1 0
+## 678 1997 98 3000000 4.7 1 0 0 0 0 1 1
+## 679 1993 195 25000000 8.8 0 0 1 0 0 0 1
+## 680 1999 95 11000000 6.8 0 0 1 0 0 1 0
+## 681 2001 70 3000000 4.1 0 1 0 1 0 1 0
+## 682 1998 170 70000000 8.3 0 0 1 1 0 0 1
+## 683 1999 95 50000000 5.6 0 0 1 0 0 1 1
+## 684 1994 110 10500000 6.1 0 0 1 0 0 1 1
+## 685 2005 118 13200000 7.2 0 0 1 0 0 1 1
+## 686 1999 121 32000000 6.7 0 0 1 0 0 0 1
+## 687 1999 96 45000000 3.5 0 0 1 1 0 0 0
+## 688 1999 139 40000000 7.0 0 0 1 0 0 0 1
+## 689 1995 100 23000000 6.4 0 0 1 0 0 0 1
+## 690 2004 88 20000000 3.7 0 0 1 1 0 0 1
+## 691 2001 88 1200000 6.0 0 0 1 0 0 1 0
+## 692 1998 132 35000000 6.0 0 1 0 1 0 0 1
+## 693 1998 91 35000000 3.8 0 0 1 1 0 0 0
+## 694 2002 135 15000000 7.8 0 0 1 0 0 0 1
+## 695 1969 96 1000000 4.1 0 1 0 0 0 0 0
+## 696 2005 102 19000000 6.4 0 0 1 0 0 0 0
+## 697 1997 89 2000000 3.3 0 0 1 0 0 0 0
+## 698 2003 86 16000000 4.9 0 1 0 0 0 1 0
+## 699 1992 128 49000000 6.7 0 0 1 0 0 0 0
+## 700 2004 95 500000 4.1 0 0 1 1 0 0 0
+## 701 1996 123 9000000 6.1 0 0 1 1 0 0 1
+## 702 1995 135 50000000 4.4 0 0 1 0 0 0 1
+## 703 1998 98 12000000 6.1 0 0 1 0 0 0 1
+## 704 2001 101 80000000 5.8 0 1 0 0 0 1 0
+## 705 1998 113 85000000 6.3 0 1 0 0 0 0 1
+## 706 2004 98 5000000 5.2 0 0 1 0 0 0 0
+## 707 2000 153 2000000 8.2 0 0 1 0 0 0 1
+## 708 2003 137 30000000 8.0 0 0 1 0 0 0 1
+## 709 2001 108 4500000 7.4 0 0 1 0 0 0 1
+## 710 2000 100 3500000 4.7 0 0 1 0 0 0 0
+## 711 1999 112 35000000 6.4 0 1 0 0 0 1 1
+## 712 2001 113 40000000 6.1 0 1 0 0 0 1 1
+## 713 1998 121 66000000 6.7 0 1 0 1 0 0 0
+## 714 1998 98 73000000 5.7 0 0 1 0 0 0 0
+## 715 2004 95 5000000 3.3 0 0 1 0 0 0 1
+## 716 1999 113 66000000 6.1 0 1 0 0 0 1 0
+## 717 1999 114 23000000 5.9 0 1 0 0 0 0 1
+## 718 2003 120 23000000 6.1 0 0 1 0 0 0 1
+## 719 2004 87 56000000 5.9 0 1 0 1 0 0 1
+## 720 1996 139 80000000 6.6 0 0 1 1 0 0 1
+## 721 1996 108 65000000 5.7 0 0 1 1 0 0 0
+## 722 1996 100 30000000 4.9 0 1 0 0 0 1 0
+## 723 2002 85 35000000 4.7 1 0 0 0 1 1 0
+## 724 2001 87 6000000 4.9 0 0 1 0 0 1 0
+## 725 2004 132 160000000 5.4 0 1 0 1 0 0 0
+## 726 1999 111 500000 7.1 0 0 1 0 0 0 1
+## 727 2001 86 11000000 4.6 0 1 0 0 0 1 0
+## 728 2004 88 50000000 4.7 0 1 0 0 0 1 0
+## 729 1999 95 10000000 5.5 0 1 0 0 0 1 0
+## 730 1997 86 45000000 6.5 0 1 0 0 0 1 0
+## 731 1991 92 30000000 3.4 0 0 1 1 0 0 0
+## 732 1998 95 12000000 4.4 0 0 1 1 0 0 1
+## 733 2001 111 21000000 7.6 0 0 1 0 0 1 1
+## 734 1999 97 14000000 7.0 0 1 0 0 0 1 0
+## 735 2002 97 15000000 6.8 1 0 0 0 0 1 1
+## 736 1995 100 55000000 5.6 1 0 0 0 0 1 0
+## 737 2004 117 26000000 5.3 0 1 0 0 0 1 0
+## 738 2003 116 75000000 5.2 0 1 0 1 0 1 0
+## 739 2001 118 20000000 7.7 0 0 1 0 0 1 1
+## 740 1999 100 7000000 6.0 1 0 0 0 0 0 1
+## 741 2004 136 78000000 6.6 0 1 0 1 0 0 1
+## 742 1997 105 25000000 5.6 0 0 1 0 0 0 0
+## 743 1996 117 18000000 5.7 0 0 1 0 0 0 0
+## 744 2003 98 18000000 7.2 0 0 1 0 0 1 0
+## 745 2002 101 11000000 6.8 1 0 0 0 0 0 1
+## 746 2003 86 60000000 6.5 1 0 0 0 1 0 0
+## 747 2005 102 60000000 5.6 0 1 0 0 0 1 0
+## 748 2002 93 12000000 3.1 0 1 0 0 0 1 1
+## 749 2001 96 10000000 4.2 0 0 1 0 0 0 0
+## 750 1996 81 18000000 4.5 0 1 0 1 0 1 0
+## 751 1998 97 1400000 5.3 1 0 0 0 0 1 1
+## 752 2004 128 60000000 7.1 0 1 0 0 0 1 1
+## 753 1998 108 60000000 5.6 0 0 1 1 0 0 1
+## 754 1997 103 3000000 6.6 1 0 0 0 0 1 0
+## 755 1996 84 4000000 7.6 0 0 1 0 0 1 0
+## 756 2000 110 2000000 7.2 0 0 1 0 0 1 0
+## 757 2000 96 20000000 6.1 0 0 1 0 0 1 0
+## 758 1995 114 22000000 5.6 0 1 0 1 0 0 1
+## 759 2003 98 5000000 5.8 0 0 1 0 0 0 1
+## 760 1994 99 12000000 4.6 0 0 1 1 0 0 1
+## 761 2000 114 1500000 7.6 0 0 1 0 0 0 1
+## 762 2002 95 140000000 6.6 1 0 0 0 1 0 1
+## 763 1996 99 4800000 5.3 0 0 1 0 0 0 1
+## 764 2000 94 15000000 5.2 0 1 0 0 0 1 1
+## 765 1973 122 4638783 6.9 0 0 1 0 0 0 0
+## 766 1998 85 17000000 5.3 0 0 1 0 0 0 0
+## 767 2002 94 11000000 5.9 0 0 1 0 0 1 0
+## 768 1999 104 7000000 5.4 0 0 1 0 0 0 1
+## 769 1999 81 14000000 4.5 0 1 0 0 0 1 0
+## 770 1999 112 80000000 4.6 0 1 0 0 0 0 0
+## 771 1994 117 6000000 7.2 0 0 1 0 0 1 1
+## 772 1997 127 20000000 6.1 1 0 0 0 0 0 1
+## 773 2001 91 1000000 5.5 0 1 0 0 0 1 0
+## 774 1997 152 40000000 7.0 0 0 1 0 0 0 1
+## 775 1997 140 31000000 6.8 0 0 1 1 0 0 1
+## 776 2003 119 60000000 6.1 0 1 0 1 0 0 0
+## 777 1998 100 24000000 4.0 0 0 1 0 0 0 0
+## 778 1995 94 250000 6.5 0 0 1 0 0 1 1
+## 779 2000 106 75000000 5.3 0 1 0 1 0 0 0
+## 780 2000 90 15000000 4.2 0 0 1 0 0 0 0
+## 781 2005 97 16000000 4.0 0 0 1 1 0 0 0
+## 782 1997 128 50000000 7.6 0 0 1 0 0 0 0
+## 783 2002 113 48000000 7.0 0 0 1 0 0 0 1
+## 784 2000 114 9000000 6.3 0 0 1 0 0 0 1
+## 785 1965 152 3800000 6.4 0 1 0 0 0 0 0
+## 786 1998 127 140000000 6.3 0 0 1 1 0 1 0
+## 787 2000 99 26000000 2.5 0 0 1 0 0 1 0
+## 788 2001 106 137000000 6.5 0 1 0 1 1 0 0
+## 789 1999 126 30000000 5.4 0 1 0 0 0 0 1
+## 790 2003 101 81000000 6.4 0 1 0 0 0 1 0
+## 791 2004 98 30000000 7.3 0 0 1 1 0 1 0
+## 792 2002 99 35000000 5.1 1 0 0 0 0 1 0
+## 793 2000 82 127500000 6.3 1 0 0 0 1 0 0
+## 794 1996 105 5500000 7.6 0 1 0 0 0 0 1
+## 795 1999 101 34000000 5.0 0 0 1 1 0 1 0
+## 796 2002 88 750000 6.7 0 0 1 0 0 0 1
+## 797 1995 99 5000000 4.1 0 0 1 1 0 0 0
+## 798 2004 122 7000000 6.3 0 1 0 0 0 1 0
+## 799 2002 94 63000000 6.2 0 1 0 1 0 1 0
+## 800 2005 95 32000000 3.5 1 0 0 0 0 1 0
+## 801 2002 104 60000000 5.8 0 1 0 0 0 0 1
+## 802 2000 111 10000000 6.8 0 0 1 0 0 0 1
+## 803 1989 171 69500000 7.4 0 1 0 1 0 0 1
+## 804 2002 104 30000000 5.7 0 1 0 0 0 0 1
+## 805 1998 106 10000000 6.6 0 1 0 0 0 0 1
+## 806 2000 108 300000 6.4 1 0 0 0 0 0 1
+## 807 1999 99 20000000 3.7 0 0 1 1 0 0 0
+## 808 2001 97 4800000 6.0 0 0 1 0 0 0 0
+## 809 2002 108 10000000 6.2 0 0 1 0 0 0 0
+## 810 2002 102 12000000 6.6 0 1 0 0 0 1 1
+## 811 1981 216 14000000 8.5 0 0 1 0 0 0 1
+## 812 1998 106 20000000 5.6 0 0 1 1 0 0 0
+## 813 1999 109 34000000 4.8 0 0 1 0 0 0 0
+## 814 2000 106 26000000 7.8 0 1 0 0 0 1 0
+## 815 1998 100 9000000 5.1 0 0 1 0 0 0 1
+## 816 2003 127 35000000 5.4 0 0 1 0 0 0 1
+## 817 1984 180 18000000 8.3 0 0 1 0 0 0 1
+## 818 1999 81 21000000 7.6 0 0 1 0 1 1 0
+## 819 1998 97 5500000 5.4 0 1 0 0 0 0 1
+## 820 2000 94 2000000 5.7 1 0 0 0 0 1 1
+## 821 2002 109 8000000 5.9 0 1 0 0 0 1 1
+## 822 2000 91 22000000 5.6 1 0 0 0 0 1 0
+## 823 1996 149 40000000 6.9 0 0 1 0 0 0 1
+## 824 2003 138 127000000 7.1 0 0 1 1 0 0 0
+## 825 2003 90 7000000 2.3 0 0 1 1 0 0 0
+## 826 2001 90 30000 2.2 0 0 1 0 0 0 0
+## 827 1995 92 33000000 2.2 1 0 0 0 0 1 0
+## 828 1995 111 4000000 7.5 0 0 1 0 0 0 1
+## 829 2001 97 1500000 6.6 0 0 1 0 0 0 1
+## 830 2000 100 45000000 5.4 0 0 1 0 0 1 1
+## 831 2003 124 20000000 8.0 0 0 1 0 0 0 1
+## 832 2001 113 50000000 6.2 0 0 1 0 0 0 1
+## 833 2000 104 75000000 7.3 0 1 0 1 0 0 0
+## 834 2004 121 92000000 8.3 1 0 0 1 1 1 0
+## 835 2002 90 3500000 6.0 0 0 1 1 0 0 1
+## 836 2001 86 90000000 6.5 0 1 0 1 0 1 0
+## 837 1998 115 50000000 6.1 0 1 0 0 0 1 1
+## 838 2004 124 125000000 6.3 0 1 0 1 0 0 1
+## 839 2002 117 12500000 7.4 0 1 0 0 0 0 1
+## 840 2002 92 10000000 4.7 0 1 0 0 0 1 0
+## 841 1994 95 13000000 6.3 0 0 1 0 0 1 0
+## 842 1994 116 28000000 7.1 0 0 1 1 0 0 0
+## 843 2004 128 12000000 7.0 0 0 1 0 0 0 1
+## 844 1999 139 63000000 8.5 0 0 1 0 0 0 1
+## 845 1999 136 63000000 8.5 0 0 1 1 0 0 0
+## 846 2005 105 30000000 4.6 0 0 1 0 0 0 0
+## 847 1991 154 100000000 8.2 0 0 1 1 0 0 1
+## 848 2004 95 5000000 4.2 0 0 1 0 0 1 0
+## 849 1984 227 30000000 8.2 0 0 1 0 0 0 1
+## 850 2005 101 30000000 5.2 0 0 1 0 0 0 1
+## 851 1971 97 900000 4.9 0 1 0 1 0 0 1
+## 852 2004 104 26000000 6.5 0 1 0 0 0 1 0
+## 853 1998 113 27000000 5.7 0 1 0 1 0 0 1
+## 854 1996 95 1300000 7.1 0 0 1 0 0 1 1
+## 855 1995 119 92000000 5.1 0 1 0 1 0 0 0
+## 856 2000 83 13000000 4.6 0 1 0 0 0 1 0
+## 857 2002 141 5600000 7.0 0 1 0 0 0 0 1
+## 858 2003 82 109000000 3.2 1 0 0 0 0 1 0
+## 859 1995 114 62000000 6.9 0 1 0 0 0 1 1
+## 860 1998 95 12000000 3.2 0 0 1 1 0 0 0
+## 861 2001 84 14000000 3.6 0 0 1 0 0 0 0
+## 862 2002 99 9000000 7.1 0 0 1 0 0 1 1
+## 863 2001 111 80000 5.2 0 0 1 0 0 0 1
+## 864 2003 80 20000000 2.8 0 0 1 0 0 1 0
+## 865 1996 147 44000000 7.0 0 0 1 0 0 0 1
+## 866 1998 170 52000000 7.2 0 0 1 1 0 0 1
+## 867 1996 87 3000000 3.0 0 0 1 0 0 0 0
+## 868 2000 124 15000000 6.2 0 1 0 0 0 0 1
+## 869 1999 102 23000000 7.0 0 0 1 0 0 0 1
+## 870 2004 118 7500000 6.3 1 0 0 0 0 0 1
+## 871 2002 166 97000000 7.3 0 0 1 0 0 0 1
+## 872 2002 121 4000000 5.6 0 0 1 0 0 1 0
+## 873 1995 127 50000000 6.4 0 0 1 0 0 0 1
+## 874 2002 97 5000000 5.0 0 0 1 0 0 0 0
+## 875 2003 94 17000000 3.9 0 1 0 0 0 0 1
+## 876 2004 91 3000000 5.4 0 0 1 0 0 0 0
+## 877 1999 104 2600000 6.3 0 0 1 0 0 0 1
+## 878 1996 98 3000000 2.9 0 0 1 0 0 0 0
+## 879 2000 104 50000000 5.6 0 0 1 0 0 1 0
+## 880 1996 121 6000000 6.9 1 0 0 0 0 1 0
+## 881 1999 188 60000000 8.1 0 0 1 0 0 0 1
+## 882 2003 135 74000000 5.4 0 1 0 1 0 0 1
+## 883 2004 146 70000000 7.4 0 0 1 1 0 0 1
+## 884 1993 84 22000 3.9 0 0 1 0 0 1 0
+## 885 2003 104 52000000 5.2 0 1 0 1 0 1 0
+## 886 1995 106 30000000 5.3 0 0 1 1 0 0 0
+## 887 1999 94 13000000 6.3 0 1 0 0 0 1 0
+## 888 1998 90 650000 4.5 0 0 1 0 0 0 0
+## 889 2000 123 125000000 5.7 0 1 0 1 0 0 0
+## 890 2001 85 10000000 4.1 1 0 0 0 0 1 0
+## 891 1999 100 16000000 6.0 0 0 1 0 0 0 1
+## 892 1998 104 10000000 7.2 0 0 1 0 0 0 1
+## 893 1997 101 12000000 5.0 1 0 0 0 0 0 0
+## 894 2002 102 5000000 6.2 0 0 1 0 0 1 0
+## 895 2000 128 60000000 6.3 0 0 1 0 0 0 1
+## 896 2003 145 130000000 6.1 0 0 1 1 0 1 0
+## 897 1999 128 40000000 5.7 0 1 0 0 0 0 1
+## 898 2001 92 11000000 5.2 0 1 0 0 0 1 0
+## 899 2002 134 35000000 7.4 0 1 0 1 0 0 1
+## 900 2002 140 100000000 6.6 0 1 0 0 0 0 1
+## 901 1998 98 700000 4.9 0 0 1 0 0 0 0
+## 902 2002 85 20000000 4.9 0 0 1 0 0 1 0
+## 903 1997 90 22000000 5.4 0 1 0 0 0 1 0
+## 904 2003 95 6000000 7.5 0 1 0 0 0 0 1
+## 905 2002 82 18000000 6.1 0 1 0 0 0 1 1
+## 906 1997 88 5000000 5.4 0 0 1 0 0 1 1
+## 907 1997 127 35000000 7.6 0 0 1 0 0 0 1
+## 908 2004 102 27000000 6.3 0 0 1 1 0 0 0
+## 909 1997 86 5000000 5.0 0 1 0 1 0 0 0
+## 910 2001 104 40000000 4.4 0 1 0 1 0 0 1
+## 911 1996 123 32000000 6.3 1 0 0 0 0 0 1
+## 912 2001 95 3000000 4.1 0 0 1 0 0 0 0
+## 913 2000 112 23000000 6.7 0 0 1 0 0 0 0
+## 914 1998 99 60000000 6.9 1 0 0 0 1 0 1
+## 915 2001 90 60000000 8.0 1 0 0 0 1 1 0
+## 916 2000 101 15000000 4.4 0 0 1 1 0 0 0
+## 917 2002 101 42000000 3.2 0 0 1 0 0 0 0
+## 918 1997 134 5000000 7.2 0 1 0 0 0 0 1
+## 919 2000 93 200000 3.1 0 0 1 0 0 0 0
+## 920 2001 95 12000000 4.9 0 0 1 0 0 1 0
+## 921 2002 113 8000000 7.3 0 0 1 0 0 0 0
+## 922 2002 118 20000000 5.3 0 1 0 0 0 1 1
+## 923 1997 112 18000000 7.5 0 0 1 0 0 0 1
+## 924 1998 94 4000000 3.9 0 0 1 0 0 0 0
+## 925 1997 96 70000000 5.7 0 0 1 0 0 0 0
+## 926 2000 114 12000000 7.1 0 0 1 0 0 0 0
+## 927 1997 116 70000000 6.0 0 0 1 1 0 0 0
+## 928 2001 90 1500000 5.2 0 1 0 0 0 1 0
+## 929 2003 104 10000000 7.0 0 0 1 0 0 0 1
+## 930 1998 101 50000000 4.5 1 0 0 0 0 1 1
+## 931 2002 105 55000000 4.6 0 1 0 0 0 1 0
+## 932 2000 112 15000000 5.8 0 0 1 0 0 1 1
+## 933 1995 129 25000000 6.8 0 0 1 0 0 0 1
+## 934 2000 92 20000000 5.1 0 1 0 0 0 1 0
+## 935 2005 83 2400000 2.8 0 0 1 0 0 1 0
+## 936 2001 108 1000000 6.5 0 0 1 0 0 1 0
+## 937 2002 94 4000000 6.6 0 0 1 0 0 0 1
+## 938 1996 129 38000000 6.4 0 1 0 0 0 0 1
+## 939 2002 94 8000000 6.8 0 0 1 0 0 0 1
+## 940 2001 97 23000000 5.7 0 1 0 0 0 1 0
+## 941 1998 97 3500000 6.2 0 0 1 0 0 1 0
+## 942 2001 96 18000000 6.4 0 1 0 0 0 1 0
+## 943 2004 96 13000000 5.0 0 0 1 0 0 0 1
+## 944 2004 94 42000000 5.8 0 1 0 0 0 0 1
+## 945 1972 180 4000000 7.3 1 0 0 0 0 0 1
+## 946 2002 90 43000000 4.7 0 0 1 0 0 1 0
+## 947 2000 95 8200000 2.9 0 1 0 1 0 0 1
+## 948 2002 112 16000000 6.3 0 1 0 0 0 1 1
+## 949 2002 108 55000000 6.6 0 0 1 1 0 0 0
+## 950 1999 101 6000000 5.4 0 0 1 0 0 1 1
+## 951 1995 108 11000000 5.6 0 0 1 0 0 0 0
+## 952 2000 97 33000000 5.2 0 0 1 0 0 0 0
+## 953 1999 93 12500000 3.9 0 0 1 1 0 0 0
+## 954 1994 86 12000000 6.2 0 1 0 0 0 1 0
+## 955 2004 95 20000000 4.9 1 0 0 0 0 1 0
+## 956 2001 184 135250000 5.4 0 0 1 1 0 0 1
+## 957 1998 91 15000000 4.9 0 1 0 0 0 1 1
+## 958 1996 132 25000000 5.4 0 0 1 0 0 0 0
+## 959 2004 143 60000000 7.2 0 1 0 0 0 0 1
+## 960 2001 131 60000000 6.4 0 0 1 1 0 0 1
+## 961 2002 95 500000 4.1 0 0 1 0 0 0 1
+## 962 1999 111 15000000 6.1 0 1 0 0 0 1 1
+## 963 2002 89 500000 3.8 0 1 0 0 0 1 0
+## 964 1998 93 10000000 7.7 0 0 1 0 0 1 1
+## 965 1998 90 23000000 5.5 0 1 0 0 0 1 0
+## 966 2002 95 7500000 7.2 0 0 1 1 0 0 0
+## 967 1996 100 45000000 5.0 1 0 0 1 0 0 0
+## 968 2003 109 8000000 7.4 0 0 1 0 0 0 1
+## 969 2000 136 43000000 7.3 0 1 0 0 0 0 1
+## 970 2003 133 75000000 5.7 0 0 1 1 0 0 0
+## 971 2000 79 7000 4.9 0 0 1 0 0 0 1
+## 972 2003 100 1500000 7.1 0 0 1 0 0 0 1
+## 973 2003 105 5740000 7.0 0 0 1 0 0 0 1
+## 974 2000 108 25000000 4.7 0 1 0 0 0 1 1
+## 975 1997 107 15000000 7.4 0 0 1 0 0 1 0
+## 976 2004 120 110000000 5.7 1 0 0 1 0 1 0
+## 977 2003 109 35000000 6.9 1 0 0 0 0 0 1
+## 978 2002 92 11000000 5.6 0 0 1 0 0 0 1
+## 979 2004 102 35000000 6.4 0 1 0 0 0 1 1
+## 980 1997 118 10000000 6.9 0 0 1 0 0 0 1
+## 981 2000 145 80000000 7.4 0 1 0 0 0 0 1
+## 982 1994 123 45000000 6.0 0 0 1 0 0 0 1
+## 983 2003 90 500000 3.0 0 0 1 1 0 0 0
+## 984 1995 100 14000000 4.4 0 0 1 0 0 1 0
+## 985 1998 91 2000000 3.8 0 0 1 0 0 0 1
+## 986 1996 113 45000000 5.2 0 1 0 0 0 1 1
+## 987 1995 85 1000000 4.2 0 0 1 0 0 1 0
+## 988 2002 108 25000 4.6 0 0 1 0 0 0 0
+## 989 2000 96 11000000 5.6 0 0 1 0 0 1 0
+## 990 1995 106 1500000 4.8 0 0 1 0 0 1 0
+## 991 2000 113 5000000 8.7 0 0 1 0 0 0 1
+## 992 1996 129 30000000 7.5 0 0 1 0 0 0 1
+## 993 1994 168 8000000 8.8 0 0 1 0 0 0 1
+## 994 2001 107 14500000 7.3 0 1 0 1 1 0 1
+## 995 1999 97 3000000 6.2 0 0 1 0 0 1 0
+## 996 1999 100 4500000 6.9 0 1 0 0 0 0 1
+## 997 1996 98 4000000 4.0 0 0 1 0 0 1 0
+## 998 1999 119 33000000 5.9 0 0 1 0 0 1 1
+## 999 2002 92 3000000 5.9 0 0 1 0 0 0 0
+## 1000 2000 104 15000000 4.0 0 1 0 0 0 0 1
+## 1001 1999 89 8000000 4.6 0 1 0 0 0 1 0
+## 1002 2000 114 50000000 6.2 0 1 0 0 0 1 0
+## 1003 1997 111 250000 7.6 0 0 1 0 0 1 1
+## 1004 2004 113 45000000 6.0 0 1 0 1 0 0 0
+## 1005 1994 106 3000000 7.1 0 0 1 0 0 1 0
+## 1006 2004 97 12000000 3.6 0 1 0 0 0 1 0
+## 1007 1998 103 60000000 5.4 0 1 0 0 0 0 1
+## 1008 1997 121 50000000 6.4 0 0 1 0 0 0 1
+## 1009 1998 102 4000000 4.6 0 0 1 0 0 0 1
+## 1010 1997 92 55000000 5.5 1 0 0 0 0 1 0
+## 1011 2001 91 16000000 5.1 0 1 0 0 0 1 0
+## 1012 1997 92 35000000 6.2 0 1 0 0 0 1 0
+## 1013 2001 98 6000000 4.9 0 0 1 0 0 0 0
+## 1014 2002 101 95000000 5.8 0 1 0 1 0 0 0
+## 1015 2003 78 8000000 7.7 0 1 0 0 1 1 0
+## 1016 1998 140 10000000 7.8 0 0 1 0 0 0 1
+## 1017 1999 102 45000000 7.2 1 0 0 0 0 1 0
+## 1018 2001 103 26000000 6.8 0 1 0 0 0 1 1
+## 1019 2002 107 13500000 7.7 0 1 0 0 0 0 1
+## 1020 2003 90 780000 6.9 0 1 0 1 0 0 1
+## 1021 1996 122 42000000 5.7 0 1 0 0 0 1 1
+## 1022 2000 115 25000000 5.8 0 0 1 1 0 0 1
+## 1023 1997 116 70000000 5.7 0 1 0 1 0 0 0
+## 1024 1998 119 65000000 6.2 1 0 0 0 0 1 0
+## 1025 1996 124 60000000 5.7 0 1 0 0 0 0 1
+## 1026 1997 94 300000 5.0 0 0 1 0 0 0 1
+## 1027 2002 104 4500000 6.2 0 0 1 0 0 0 1
+## 1028 1986 154 18500000 8.3 0 0 1 1 0 0 0
+## 1029 1999 96 13000000 5.0 0 1 0 0 0 1 0
+## 1030 2002 107 215000 7.1 0 0 1 0 0 0 1
+## 1031 2004 140 90000000 6.0 0 0 1 1 0 0 1
+## 1032 2001 98 500000 5.7 0 0 1 0 0 1 0
+## 1033 1998 114 49000000 5.6 1 0 0 0 0 0 0
+## 1034 2001 92 2700000 3.4 0 0 1 0 0 1 0
+## 1035 1998 103 60000000 7.7 1 0 0 0 0 1 1
+## 1036 1994 142 55000000 8.2 0 1 0 0 0 1 1
+## 1037 2000 94 16000000 4.9 0 1 0 0 0 1 1
+## 1038 2003 138 150000000 7.5 0 1 0 1 0 0 1
+## 1039 2002 93 5000000 6.9 0 0 1 0 0 1 1
+## 1040 2004 89 15000000 4.4 1 0 0 0 0 1 0
+## 1041 2002 101 27000000 7.5 0 1 0 0 0 1 1
+## 1042 1978 151 55000000 7.1 1 0 0 1 0 0 0
+## 1043 2001 86 2300000 4.0 0 0 1 1 0 0 0
+## 1044 1998 116 70000000 5.9 0 0 1 1 0 0 1
+## 1045 2004 89 500000 7.3 0 0 1 0 0 0 1
+## 1046 1995 123 20000000 6.5 0 0 1 0 0 0 1
+## 1047 2003 85 19000000 3.3 0 1 0 0 0 1 0
+## 1048 1999 108 30000000 4.9 0 0 1 0 0 0 1
+## 1049 2005 89 20000000 4.1 0 1 0 0 0 0 1
+## 1050 2004 73 300000 2.8 0 0 1 0 0 0 1
+## 1051 1997 103 9000000 4.0 1 0 0 0 0 1 0
+## 1052 1997 98 18000000 4.5 0 0 1 0 0 1 0
+## 1053 1996 90 500000 4.0 0 0 1 0 0 1 0
+## 1054 2002 98 60000000 5.1 0 1 0 1 0 1 0
+## 1055 1999 93 2500000 5.6 0 0 1 0 0 1 0
+## 1056 2004 120 65000000 7.7 0 0 1 0 0 0 1
+## 1057 2004 96 35000000 6.5 1 0 0 0 0 1 0
+## 1058 1996 135 45000000 6.2 0 0 1 0 0 1 1
+## 1059 2001 105 10000000 4.8 0 0 1 0 0 0 1
+## 1060 1997 84 1000000 5.6 0 0 0 0 0 1 1
+## 1061 2004 135 110000000 6.2 0 1 0 1 0 0 0
+## 1062 1998 93 35000000 6.7 0 1 0 1 0 1 0
+## 1063 2003 111 8000000 7.0 0 0 1 0 0 0 1
+## 1064 1992 131 4500000 7.9 0 0 1 1 0 0 1
+## 1065 1998 90 600000 6.1 0 0 1 0 0 0 1
+## 1066 1998 105 20000000 5.0 0 0 1 0 0 0 0
+## 1067 2003 98 17000000 5.5 0 1 0 0 0 1 0
+## 1068 1996 109 4500000 7.5 0 0 1 0 0 0 0
+## 1069 2002 223 94000000 8.8 0 1 0 1 0 0 0
+## 1070 2004 101 60000000 6.3 0 1 0 1 0 1 0
+## 1071 2005 97 35000000 4.7 0 0 1 0 0 0 0
+## 1072 2003 125 70000000 8.1 0 1 0 0 0 1 1
+## 1073 1998 99 14000000 5.1 0 0 1 0 0 0 0
+## 1074 2002 90 80000 4.7 0 0 1 0 0 1 0
+## 1075 2001 88 6100000 4.6 0 0 1 1 0 0 0
+## 1076 1965 200 11000000 7.9 0 1 0 0 0 0 1
+## 1077 2005 136 30000000 6.6 0 1 0 0 0 0 1
+## 1078 2000 108 55000000 7.0 0 1 0 0 0 1 0
+## 1079 2004 104 35000000 6.4 0 0 1 0 0 1 0
+## 1080 1999 114 48000000 7.3 0 0 1 1 0 1 1
+## 1081 2001 90 5000000 5.1 0 0 1 0 0 0 0
+## 1082 1998 95 10000000 2.6 0 1 0 0 0 1 0
+## 1083 2001 100 3000000 6.3 0 0 1 0 0 1 0
+## 1084 1995 89 11000000 4.4 0 0 1 1 0 0 1
+## 1085 1981 86 350000 7.4 0 0 0 0 0 0 0
+## 1086 1997 94 53000000 3.8 1 0 0 0 0 1 0
+## 1087 2000 99 20000000 5.5 0 0 1 0 0 1 0
+## 1088 2004 92 1000000 4.7 0 0 1 0 0 0 1
+## 1089 2003 91 80000000 6.1 1 0 0 1 1 1 0
+## 1090 2004 77 7000 6.4 0 1 0 0 0 0 1
+## 1091 1996 109 55000000 6.4 0 0 1 1 0 0 1
+## 1092 2002 143 75000000 7.1 0 0 1 1 0 0 1
+## 1093 2003 92 60000000 5.7 1 0 0 0 0 1 0
+## 1094 1999 121 83000000 5.3 0 0 1 1 0 0 0
+## 1095 1997 89 28000000 5.0 1 0 0 0 0 1 0
+## 1096 2003 92 7500000 6.4 0 0 1 0 0 0 1
+## 1097 2003 209 56000000 5.7 0 1 0 1 0 0 1
+## 1098 2000 98 30000000 4.7 0 1 0 0 0 1 0
+## 1099 2003 126 16000000 7.8 0 0 1 0 0 0 1
+## 1100 1999 101 21000000 5.0 0 1 0 0 0 1 0
+## 1101 2001 87 20000000 5.1 0 0 1 0 0 1 0
+## 1102 2001 90 4000000 6.0 0 0 1 1 0 0 0
+## 1103 2001 92 75000000 4.7 0 1 0 0 1 1 0
+## 1104 2002 92 1000000 7.5 0 0 1 0 0 1 0
+## 1105 2002 108 72000000 7.1 0 1 0 0 0 0 1
+## 1106 1996 87 80000000 5.2 1 0 0 0 1 1 0
+## 1107 2003 112 5000000 7.9 0 0 1 0 0 1 1
+## 1108 2000 106 75000000 7.1 0 1 0 0 0 0 1
+## 1109 2004 84 3000000 4.6 0 0 1 1 0 1 0
+## 1110 1998 123 28000000 4.5 0 1 0 0 0 1 0
+## 1111 2001 124 68000000 6.8 0 0 1 0 0 0 1
+## 1112 1994 84 15000 5.8 0 0 1 0 0 0 0
+## 1113 2000 111 1200000 7.8 0 0 1 0 0 0 1
+## 1114 1997 129 95000000 6.7 0 0 1 1 0 0 0
+## 1115 1999 93 60000000 4.5 1 0 0 0 0 1 0
+## 1116 1995 96 45000000 5.8 1 0 0 0 0 0 0
+## 1117 1996 90 15000000 4.7 0 0 1 1 0 0 1
+## 1118 1996 125 16000000 6.1 0 0 1 0 0 0 1
+## 1119 1998 170 60000000 6.4 0 1 0 0 0 0 1
+## 1120 2004 96 1000000 5.1 0 0 1 0 0 0 0
+## 1121 2001 131 70000000 7.3 0 0 1 1 0 0 1
+## 1122 2004 111 35000000 4.7 0 1 0 0 0 1 1
+## 1123 1997 135 40000000 6.8 0 1 0 0 0 0 1
+## 1124 2002 85 8500000 4.5 0 1 0 0 0 0 1
+## 1125 1999 122 60000000 6.2 0 1 0 0 0 1 0
+## 1126 1997 122 4500000 7.7 0 0 1 0 0 0 1
+## 1127 1996 108 8000000 4.4 0 0 1 0 0 1 0
+## 1128 1999 130 10000000 7.3 0 0 1 0 0 1 0
+## 1129 2002 88 140000000 5.6 0 1 0 1 0 1 0
+## 1130 2003 154 100000000 7.9 0 0 1 1 0 0 1
+## 1131 2002 103 6000000 6.3 0 0 1 1 0 0 1
+## 1132 1999 99 19000000 5.1 0 0 1 0 0 0 0
+## 1133 1997 74 250000 6.2 0 0 1 0 1 1 1
+## 1134 2003 90 30000000 7.3 0 0 1 0 0 0 1
+## 1135 2000 104 40000000 4.7 0 0 1 1 0 0 1
+## 1136 2000 116 45000000 5.6 0 1 0 0 0 0 1
+## 1137 2001 99 80000000 6.2 0 0 1 1 0 0 0
+## 1138 2002 102 10000000 6.0 1 0 0 0 0 0 1
+## 1139 1999 99 13000000 5.7 0 0 1 0 0 0 1
+## 1140 1970 87 500000 4.6 0 0 1 0 0 0 0
+## 1141 1996 94 3500000 8.0 0 0 1 0 0 0 1
+## 1142 1998 112 60000000 6.4 0 1 0 0 0 0 1
+## 1143 1998 103 58000000 6.3 1 0 0 1 0 0 1
+## 1144 1998 83 20000000 3.6 1 0 0 1 0 0 0
+## 1145 2005 96 20000000 2.1 0 0 1 1 0 0 0
+## 1146 2001 103 2000000 5.4 0 0 1 0 0 0 1
+## 1147 2003 116 50000000 6.1 0 1 0 0 0 1 0
+## 1148 2001 87 60000000 5.4 1 0 0 0 0 1 0
+## 1149 2002 90 15000000 6.2 0 0 1 0 0 1 0
+## 1150 2001 112 5000000 5.7 0 1 0 0 0 1 0
+## 1151 1999 124 27000000 6.6 1 0 0 0 0 0 1
+## 1152 2003 96 20000000 3.1 0 0 1 1 0 0 0
+## 1153 1996 95 1300000 3.5 0 0 1 1 0 0 1
+## 1154 2002 94 10000000 7.1 1 0 0 0 0 0 1
+## 1155 1997 97 15000000 7.0 0 0 1 0 0 1 0
+## 1156 2004 108 75000000 7.3 0 1 0 1 0 0 1
+## 1157 2004 96 85000 1.7 0 0 1 0 0 0 0
+## 1158 1964 93 1800000 8.7 1 0 0 0 0 1 0
+## 1159 1997 105 22000000 5.0 0 0 1 0 0 1 0
+## 1160 2002 98 1100000 5.6 0 0 1 0 0 1 0
+## 1161 1997 96 2000000 2.4 0 0 1 0 0 0 0
+## 1162 1996 108 20000000 6.8 0 0 1 1 0 1 0
+## 1163 1996 95 25000000 4.5 0 1 0 0 0 1 0
+## 1164 2000 103 43000000 6.0 0 1 0 0 0 0 1
+## 1165 2002 88 1900000 7.8 0 0 1 0 0 0 1
+## 1166 1999 102 6000000 6.2 0 0 1 0 0 1 1
+## 1167 2004 95 8000000 1.9 0 1 0 0 0 0 1
+## 1168 2002 123 68000000 6.6 0 1 0 1 0 0 1
+## 1169 1981 106 10000000 6.8 0 0 1 0 0 1 0
+## 1170 2001 104 22000000 2.1 0 1 0 0 0 0 1
+## 1171 1998 124 50000000 6.1 0 1 0 0 0 1 1
+## 1172 2002 99 1200000 5.2 0 0 1 0 0 0 1
+## 1173 2001 105 17000000 4.5 0 1 0 0 0 1 0
+## 1174 2004 80 50000000 4.8 1 0 0 0 1 1 0
+## 1175 2003 108 18000000 6.5 0 0 1 0 0 1 0
+## 1176 2003 105 35000000 5.6 0 1 0 0 0 1 0
+## 1177 2002 100 10000000 5.3 0 0 1 1 0 0 1
+## 1178 1998 92 5000000 6.4 0 0 1 0 0 1 1
+## 1179 2000 88 15000000 5.1 0 0 1 1 1 0 0
+## 1180 2002 112 30000000 6.6 0 0 1 0 0 0 1
+## 1181 2000 124 15000000 6.7 0 1 0 0 0 0 1
+## 1182 2002 153 115000000 5.9 0 0 1 1 0 0 1
+## 1183 1995 93 2000000 3.4 0 0 1 0 0 0 0
+## 1184 2003 107 500000 7.8 0 0 1 0 0 0 0
+## 1185 2004 126 20000000 6.6 0 1 0 1 1 0 1
+## 1186 1998 98 75000000 5.2 0 0 1 1 0 0 0
+## 1187 2002 118 15000000 6.6 0 0 1 1 0 0 1
+## 1188 2002 93 1700000 6.8 0 0 1 0 0 0 1
+## 1189 1997 153 90000000 7.3 1 0 0 0 0 0 1
+## 1190 2000 105 65000000 5.0 0 0 1 0 0 1 0
+## 1191 2003 88 41000000 4.5 0 1 0 1 0 1 0
+## 1192 1982 120 10500000 7.8 1 0 0 0 0 0 1
+## 1193 2001 95 11000000 4.7 0 0 1 0 0 1 0
+## 1194 2004 94 3500000 6.6 0 0 1 0 0 0 0
+## 1195 2001 111 5000000 5.3 0 0 1 0 0 0 1
+## 1196 1999 118 48000000 6.2 0 0 1 0 0 0 1
+## 1197 2002 115 38000000 4.9 0 1 0 0 0 0 1
+## 1198 2004 76 6000000 4.3 0 0 1 0 0 0 1
+## 1199 1996 110 32000000 5.0 1 0 0 0 0 1 1
+## 1200 1997 91 500000 6.6 0 0 1 0 0 0 1
+## 1201 2001 100 4000000 5.6 0 0 1 0 0 1 1
+## 1202 1997 129 73000000 5.5 0 1 0 1 0 0 0
+## 1203 2000 95 7000000 7.1 1 0 0 0 0 0 1
+## 1204 2002 119 42000000 6.5 0 1 0 0 0 0 0
+## 1205 2000 97 28000000 4.6 0 0 1 0 0 0 0
+## 1206 1999 92 250000 5.8 0 0 1 0 0 1 0
+## 1207 2003 111 60000000 6.9 0 1 0 1 0 0 0
+## 1208 2002 94 26000000 5.1 1 0 0 0 0 0 0
+## 1209 2002 91 70000000 3.4 0 0 1 1 0 0 0
+## 1210 1997 137 58000000 6.8 0 0 1 0 0 0 1
+## 1211 1995 176 52000000 7.8 0 0 1 0 0 0 1
+## 1212 1995 107 50000000 4.8 0 0 1 1 0 0 1
+## 1213 1998 143 65000000 6.8 0 0 1 0 0 1 1
+## 1214 2002 116 70000000 5.4 0 1 0 1 0 1 0
+## 1215 2002 88 15000000 5.5 1 0 0 0 0 1 0
+## 1216 2002 145 102000000 7.8 0 1 0 1 0 0 1
+## 1217 1997 86 10000000 3.2 0 0 1 0 0 1 0
+## 1218 2002 102 500000 5.7 1 0 0 0 0 1 1
+## 1219 2003 133 110000000 7.9 0 1 0 1 0 0 0
+## 1220 2001 113 1000000 5.2 0 0 1 0 0 0 1
+## 1221 1998 117 15000000 8.0 0 0 1 0 0 1 0
+## 1222 2004 100 20000000 6.0 0 0 1 0 0 0 1
+## 1223 2005 87 100000 2.4 0 1 0 1 0 0 0
+## 1224 1997 102 24000000 5.7 0 0 1 0 0 0 1
+## 1225 2000 115 20000000 6.3 0 0 1 0 0 0 1
+## 1226 2004 100 1200000 7.5 0 0 1 0 0 0 0
+## 1227 1996 88 500000 6.9 0 0 1 0 0 0 1
+## 1228 2003 102 4000000 8.0 0 0 1 0 0 1 1
+## 1229 2003 103 1900000 6.2 0 1 0 0 0 0 1
+## 1230 2000 88 12000000 3.5 0 0 1 0 0 0 1
+## 1231 2002 101 2000000 5.0 0 0 1 0 0 1 1
+## 1232 2002 116 70000000 6.5 0 1 0 1 0 0 1
+## 1233 1999 94 6000000 4.7 0 1 0 0 0 1 0
+## 1234 2003 138 120000000 6.1 0 1 0 1 0 0 1
+## 1235 2004 117 30000000 7.0 0 1 0 0 0 0 1
+## 1236 2004 90 9000000 7.1 0 0 1 0 0 1 0
+## 1237 1999 106 14000000 6.3 0 0 1 0 0 0 1
+## 1238 2002 103 12000000 5.5 0 0 1 0 0 0 1
+## 1239 2004 93 200000 4.3 1 0 0 0 0 1 0
+## 1240 1997 108 42000000 3.7 1 0 0 0 0 1 0
+## 1241 1998 92 3000000 7.3 1 0 0 0 0 1 0
+## 1242 2002 132 85000000 5.5 0 1 0 1 0 0 0
+## 1243 2000 95 5000000 2.8 0 1 0 0 0 0 0
+## 1244 1997 104 13000000 5.3 0 0 1 0 0 0 1
+## 1245 1996 93 39000000 5.1 1 0 0 0 0 1 0
+## 1246 2003 84 39000000 4.7 1 0 0 1 0 1 0
+## 1247 2004 108 20000000 8.6 0 0 1 0 0 1 1
+## 1248 2000 90 6000000 7.5 0 1 0 0 0 1 0
+## 1249 1995 145 42000000 6.9 0 0 1 1 0 0 1
+## 1250 2005 112 1500000 6.2 0 0 1 0 0 0 1
+## 1251 2000 122 8000000 5.5 0 0 1 0 0 0 1
+## 1252 2001 98 38000000 5.5 1 0 0 0 0 1 1
+## 1253 1995 136 16500000 7.7 1 0 0 0 0 1 1
+## 1254 2001 105 6500000 5.1 0 0 1 0 0 0 1
+## 1255 2001 110 1500000 7.0 0 0 1 1 0 0 1
+## 1256 1999 100 400000 5.6 1 0 0 0 0 0 1
+## 1257 2003 130 50000000 7.1 0 0 1 0 0 0 1
+## 1258 1997 104 90000000 5.2 0 1 0 1 0 0 1
+## 1259 1996 134 55000000 6.2 1 0 0 0 0 0 1
+## 1260 1996 105 25000000 5.8 0 1 0 0 0 1 0
+## 1261 2003 141 86000000 7.5 0 1 0 0 0 0 1
+## 1262 1983 135 32500000 8.1 1 0 0 1 0 0 0
+## 1263 2004 89 10000000 4.1 1 0 0 0 0 1 0
+## 1264 1997 128 28000000 7.1 0 1 0 0 0 0 1
+## 1265 1995 106 30000000 5.6 1 0 0 0 0 1 0
+## 1266 2003 80 300000 7.3 0 1 0 0 0 1 1
+## 1267 1995 176 175000000 5.4 0 1 0 1 0 0 1
+## 1268 2002 120 50000000 6.0 0 0 1 0 0 0 0
+## 1269 2002 106 2800000 6.2 0 0 1 0 0 1 1
+## 1270 2001 135 14000000 6.5 0 1 0 0 0 0 1
+## 1271 1971 88 777000 6.5 0 0 1 0 0 0 1
+## 1272 2002 108 85000000 5.2 0 0 1 1 0 0 0
+## 1273 2004 81 40000000 3.2 0 1 0 1 0 0 0
+## 1274 1995 111 17000000 6.1 0 0 1 0 0 0 1
+## 1275 1996 120 14500000 6.7 0 1 0 1 0 0 1
+## 1276 1999 105 3000000 6.3 1 0 0 0 0 0 1
+## 1277 2002 96 11000000 5.7 0 0 1 0 0 0 1
+## 1278 2001 123 38000000 6.0 0 0 1 0 0 1 0
+## 1279 1996 95 54000000 5.8 0 1 0 0 0 1 0
+## 1280 2001 95 75000000 6.2 1 0 0 0 1 1 0
+## 1281 2004 114 30000000 6.4 0 1 0 0 0 0 1
+## 1282 1999 116 60000000 6.1 0 0 1 0 0 0 1
+## 1283 2001 133 4500000 8.3 0 0 1 0 0 0 1
+## 1284 2002 125 80000000 6.2 0 1 0 0 0 0 1
+## 1285 1999 128 135000000 6.3 0 1 0 1 0 0 0
+## 1286 1998 113 20000000 6.8 1 0 0 0 0 1 1
+## 1287 1998 94 500000 4.4 0 0 1 0 0 1 0
+## 1288 2001 138 3000000 7.6 0 0 1 1 0 0 1
+## 1289 2003 88 20000000 3.0 0 0 1 1 0 0 0
+## 1290 2002 85 40000000 6.4 0 1 0 0 0 1 0
+## 1291 2000 116 40000000 5.4 0 0 1 0 0 0 0
+## 1292 2004 95 1200000 5.7 0 0 1 0 0 1 0
+## 1293 1995 127 30000000 8.4 0 0 1 0 0 0 1
+## 1294 2001 97 45000000 5.0 0 1 0 0 0 1 0
+## 1295 1996 90 15000000 5.3 0 1 0 0 0 1 0
+## 1296 2002 95 14000000 5.4 0 0 1 1 0 1 0
+## 1297 1997 125 19000000 6.5 0 0 1 0 0 0 1
+## 1298 2003 77 50000 7.0 0 0 1 0 0 1 0
+## 1299 2003 92 17000000 6.8 0 0 1 0 0 0 1
+## 1300 2001 105 25000000 5.0 0 1 0 1 0 1 1
+## 1301 1998 104 15000000 6.1 0 0 1 0 0 0 0
+## 1302 1999 124 42000000 7.0 0 1 0 0 0 1 1
+## 1303 1996 110 80000000 5.4 0 1 0 1 0 0 1
+## 1304 2001 136 68000000 6.9 0 0 1 0 0 0 1
+## 1305 1982 116 11000000 7.6 1 0 0 1 0 0 0
+## 1306 1999 94 4000000 4.0 0 0 1 0 0 0 0
+## 1307 2002 101 60000000 5.8 0 1 0 0 0 1 0
+## 1308 2002 108 2000000 4.6 1 0 0 0 0 0 1
+## 1309 2000 86 500000 6.0 0 0 1 0 0 0 1
+## 1310 2003 82 5000000 3.9 0 0 1 0 0 0 0
+## 1311 2000 110 5000000 7.7 0 0 1 0 0 0 1
+## 1312 2004 123 30000000 7.8 0 1 0 0 0 0 1
+## 1313 1998 106 10000000 3.8 0 0 1 0 0 0 1
+## 1314 2000 107 35000000 4.0 0 1 0 1 0 0 0
+## 1315 2003 117 30000000 7.2 1 0 0 0 0 1 1
+## 1316 2004 104 85000000 3.4 0 1 0 1 0 0 0
+## 1317 1996 97 5000000 6.0 0 0 1 0 0 0 1
+## 1318 2005 107 30000000 4.6 0 1 0 0 0 1 1
+## 1319 1998 114 30000000 5.3 0 1 0 0 0 1 1
+## 1320 2000 104 9000000 5.1 0 0 1 1 0 0 0
+## 1321 1997 93 25000000 3.0 1 0 0 0 0 1 0
+## 1322 2003 120 30000000 7.4 1 0 0 0 0 1 1
+## 1323 2000 91 230000 5.0 0 0 1 0 0 0 0
+## 1324 1998 121 55000000 7.0 0 0 1 1 0 0 0
+## 1325 1998 113 12000000 6.1 0 0 1 0 0 1 0
+## 1326 2001 92 25000000 4.7 1 0 0 0 0 1 1
+## 1327 1995 98 4000000 6.0 0 0 1 0 0 1 1
+## 1328 2000 104 123000000 5.7 1 0 0 0 0 1 1
+## 1329 2004 80 10000000 8.3 0 0 1 0 0 0 1
+## 1330 1996 102 3000000 6.5 0 0 1 0 0 0 1
+## 1331 2003 104 25000000 5.2 0 0 1 0 0 0 0
+## 1332 2004 90 25000000 6.1 0 0 1 0 0 1 0
+## 1333 2003 100 60000000 6.6 0 1 0 0 0 1 0
+## 1334 2003 96 4000000 6.9 0 0 1 0 0 0 1
+## 1335 1968 158 5000000 8.7 0 1 0 0 0 0 1
+## 1336 1998 84 15000000 5.1 0 0 1 0 0 0 0
+## 1337 1998 100 13000000 5.4 0 0 1 0 0 0 1
+## 1338 2002 107 18000000 7.2 0 0 1 0 0 0 1
+## 1339 1962 84 80000 8.0 0 1 0 0 0 0 1
+## 1340 2001 87 72000000 5.1 1 0 0 0 0 1 0
+## 1341 1997 95 1200000 5.5 0 0 1 0 0 1 1
+## 1342 2002 91 1500000 6.2 1 0 0 0 0 0 1
+## 1343 1997 92 4000000 5.3 0 0 1 0 0 0 1
+## 1344 2004 96 15000000 4.8 0 0 1 1 0 1 1
+## 1345 1997 99 38000000 5.8 1 0 0 1 0 1 0
+## 1346 2002 86 11000000 4.7 0 0 1 0 0 1 0
+## 1347 2003 101 500000 5.3 1 0 0 0 0 1 0
+## 1348 1997 96 2000000 6.2 0 0 1 0 0 0 0
+## 1349 2001 127 18000000 7.5 0 0 1 0 0 1 1
+## 1350 2001 98 28000000 4.6 0 0 1 1 0 0 0
+## 1351 1997 89 2500000 4.5 0 0 1 0 0 0 0
+## 1352 1997 126 10000000 7.8 0 0 1 0 0 0 1
+## 1353 2001 81 86000 7.9 0 1 0 0 0 0 0
+## 1354 2002 89 17000000 4.4 0 1 0 0 0 0 0
+## 1355 1998 85 10000000 6.3 0 1 0 1 0 0 0
+## 1356 2004 136 30000000 8.3 0 0 1 1 0 0 1
+## 1357 2004 106 40000000 6.0 0 1 0 0 0 1 1
+## 1358 1997 116 15000000 6.7 0 0 1 0 0 0 1
+## 1359 1999 132 32000000 6.7 0 0 1 0 0 0 1
+## 1360 1997 103 9000000 6.8 0 0 1 0 0 0 1
+## 1361 1968 90 130000 7.4 0 0 1 0 0 0 0
+## 1362 2004 140 12800000 8.5 0 0 1 1 0 0 1
+## 1363 2002 96 80000000 5.5 0 1 0 1 0 0 0
+## 1364 2002 99 25000000 4.7 0 1 0 0 0 0 1
+## 1365 1990 93 100000 5.6 0 0 1 0 0 0 0
+## 1366 2001 116 26000000 5.5 0 0 1 0 0 0 1
+## 1367 2002 97 10000000 7.6 0 0 1 0 0 0 1
+## 1368 2004 109 2500000 8.1 0 0 1 0 0 1 1
+## 1369 2001 87 15000000 3.5 0 0 1 0 0 1 0
+## 1370 1960 88 30000 3.8 0 1 0 0 0 0 1
+## 1371 1999 86 48000000 7.9 1 0 0 0 1 0 0
+## 1372 2003 119 12000000 5.1 0 0 1 0 0 0 0
+## 1373 2003 106 2000000 4.9 0 1 0 0 0 0 0
+## 1374 2003 117 90000000 5.2 0 1 0 1 0 0 0
+## 1375 2004 99 75000000 6.8 0 1 0 0 0 1 0
+## 1376 1992 95 900000 6.7 0 0 1 1 0 1 0
+## 1377 1995 122 100000000 5.4 0 1 0 1 0 0 0
+## 1378 1995 103 68000000 5.1 0 0 1 1 0 1 1
+## 1379 2003 113 100000000 7.2 1 0 0 1 0 0 0
+## 1380 2002 133 142000000 6.4 0 1 0 1 0 0 0
+## 1381 2000 89 18000000 6.2 0 1 0 0 0 1 1
+## 1382 2000 109 84000000 4.5 0 1 0 0 0 1 0
+## 1383 2003 85 3000000 7.9 1 0 0 0 0 0 1
+## 1384 1998 100 4000000 4.7 0 0 1 0 0 1 0
+## 1385 1968 94 1000000 5.9 0 0 1 0 0 0 1
+## 1386 1995 134 75000000 5.6 0 1 0 0 0 0 1
+## 1387 2000 93 48000000 5.9 0 1 0 0 0 1 0
+## 1388 2001 106 8000000 6.8 0 0 1 0 1 0 1
+## 1389 2001 125 62000000 5.4 0 0 1 1 0 1 0
+## 1390 2003 81 3000000 7.3 0 0 1 0 0 0 1
+## 1391 1999 133 115000000 6.4 1 0 0 1 0 0 0
+## 1392 1997 90 5000000 5.0 0 0 1 0 0 0 0
+## 1393 1999 99 13000000 7.0 0 0 1 0 0 0 0
+## 1394 2002 97 70000000 2.8 0 0 1 1 0 0 0
+## 1395 2003 102 26000000 5.5 1 0 0 1 0 1 0
+## 1396 1997 111 80000000 5.7 0 0 1 1 0 0 1
+## 1397 2004 119 9000000 5.2 0 0 1 0 0 1 0
+## 1398 2001 95 7500000 7.0 0 0 1 0 0 0 1
+## 1399 1996 120 65000000 6.5 0 0 1 1 0 0 1
+## 1400 1995 88 5000000 4.2 0 0 1 0 0 0 0
+## 1401 1996 101 20000000 6.9 0 0 1 0 0 1 0
+## 1402 1998 131 90000000 7.1 0 0 1 1 0 0 1
+## 1403 2003 125 110000000 6.3 0 0 1 1 0 0 0
+## 1404 2003 102 38000000 4.6 0 0 1 0 0 0 0
+## 1405 1991 93 5000000 4.3 0 0 1 0 0 1 0
+## 1406 1997 98 40000000 4.6 0 1 0 1 0 0 0
+## 1407 1999 90 40000 6.3 0 0 1 0 0 1 0
+## 1408 1991 93 300000 6.2 1 0 0 0 0 1 0
+## 1409 2001 130 16000000 6.2 0 0 1 0 0 0 1
+## 1410 2000 95 36000000 4.8 0 0 1 0 0 1 1
+## 1411 2004 130 80000000 6.7 0 1 0 0 0 1 1
+## 1412 2004 104 18000000 7.2 0 0 1 0 0 1 1
+## 1413 2003 104 85000000 6.5 0 1 0 1 0 1 0
+## 1414 2000 90 80000000 4.9 0 1 0 0 0 1 0
+## 1415 1999 123 40000000 5.9 0 0 1 0 0 0 0
+## 1416 1996 98 23000000 6.5 0 1 0 0 0 1 1
+## 1417 1996 106 45000000 7.3 0 1 0 1 0 0 0
+## 1418 1996 91 13000000 5.6 0 0 1 0 0 1 0
+## 1419 1999 97 16000000 6.7 0 1 0 0 0 1 0
+## 1420 2001 93 6000000 7.7 0 0 1 0 0 1 1
+## 1421 1999 90 2000000 4.6 0 0 1 0 0 0 1
+## 1422 2001 105 11000000 4.6 0 1 0 0 0 0 1
+## 1423 1997 91 30000000 3.0 0 1 0 1 0 0 0
+## 1424 1980 129 18000000 8.8 1 0 0 1 0 0 0
+## 1425 1994 99 2000000 7.5 0 0 1 1 0 1 0
+## 1426 2004 113 6500000 8.3 0 0 1 0 0 0 1
+## 1427 2004 95 1000000 4.8 0 0 1 0 0 0 1
+## 1428 2004 100 26000000 3.8 1 0 0 1 0 1 0
+## 1429 1999 133 38000000 6.4 0 0 1 0 0 0 0
+## 1430 2002 99 39000000 5.8 1 0 0 1 0 1 0
+## 1431 1998 115 20000000 6.6 0 0 1 0 0 0 0
+## 1432 2000 102 4500000 8.4 0 0 1 0 0 0 1
+## 1433 2002 82 10000000 5.1 0 1 0 1 0 1 0
+## 1434 2004 132 66000000 6.7 0 1 0 1 0 0 0
+## 1435 1995 99 7000000 5.1 0 0 1 0 0 0 0
+## 1436 1996 113 92000000 5.9 0 1 0 1 0 0 1
+## 1437 1995 106 7000000 6.8 0 0 1 1 0 0 0
+## 1438 2002 134 3500000 4.0 0 0 1 0 0 0 1
+## 1439 2000 113 16000000 6.0 0 0 1 0 0 0 0
+## 1440 1998 139 50000000 7.2 0 0 1 1 0 0 1
+## 1441 2000 113 30000000 7.4 1 0 0 0 0 0 1
+## 1442 1997 98 90000000 6.8 0 1 0 1 0 1 0
+## 1443 2005 110 50000000 6.9 1 0 0 0 0 1 0
+## 1444 1998 96 10000000 4.5 0 0 1 0 0 0 1
+## 1445 2000 78 10000000 4.8 0 1 0 0 0 1 0
+## 1446 1996 90 4000000 5.6 0 0 1 0 0 1 0
+## 1447 1995 119 15000000 6.3 0 0 1 1 0 0 1
+## 1448 1998 91 30000000 4.7 0 0 1 0 0 1 0
+## 1449 2005 97 1000000 2.3 0 0 1 1 0 1 0
+## 1450 1994 142 25000000 9.1 0 0 1 0 0 0 1
+## 1451 2004 97 58000000 6.0 0 1 0 1 0 1 0
+## 1452 1995 98 23800 6.4 0 0 1 0 0 1 1
+## 1453 1997 114 6000000 6.9 0 0 1 0 0 0 1
+## 1454 1998 92 2000000 4.4 0 0 1 0 0 0 0
+## 1455 2001 92 93000000 5.6 0 1 0 1 0 0 0
+## 1456 1999 124 76000000 6.5 0 1 0 1 0 1 0
+## 1457 2000 147 48000000 7.8 0 0 1 0 0 0 1
+## 1458 2005 106 14000000 5.9 1 0 0 0 0 1 1
+## 1459 1998 120 75000000 5.9 0 1 0 0 0 0 1
+## 1460 1998 106 3500000 6.7 0 0 1 0 0 0 1
+## 1461 2003 102 5000000 6.4 0 0 1 0 0 1 1
+## 1462 2005 109 20000000 6.3 0 0 1 1 0 0 1
+## 1463 2002 115 42000000 6.1 0 1 0 0 0 0 1
+## 1464 1997 85 1000000 5.6 0 0 1 0 0 0 0
+## 1465 2000 122 12000000 4.8 0 0 1 0 0 1 1
+## 1466 2002 123 12000000 7.5 0 0 1 0 0 0 1
+## 1467 2004 94 25000000 6.4 0 1 0 1 0 0 0
+## 1468 1998 106 6000000 6.0 0 1 0 0 0 0 1
+## 1469 2001 86 12000000 5.3 1 0 0 0 0 1 0
+## 1470 1999 90 900000 3.9 0 0 1 0 0 0 0
+## 1471 2000 88 19000000 5.5 0 0 1 0 0 1 0
+## 1472 2005 101 20000000 6.4 1 0 0 0 0 0 1
+## 1473 1998 106 5000000 6.7 0 0 1 0 0 1 1
+## 1474 2001 100 1000000 5.4 0 0 1 0 0 0 0
+## 1475 2001 99 3000000 5.4 0 0 1 0 0 1 0
+## 1476 2004 120 13000000 7.6 0 0 1 0 0 0 1
+## 1477 1999 82 27000000 5.2 0 0 1 1 0 1 0
+## 1478 2003 102 29000000 6.0 0 0 1 1 0 0 0
+## 1479 2004 95 350000 3.8 0 0 1 0 0 0 0
+## 1480 2003 85 75000 5.7 0 0 1 0 0 0 1
+## 1481 1999 103 8500000 7.4 0 0 1 0 0 1 0
+## 1482 1998 124 20000000 5.0 0 0 1 0 0 0 1
+## 1483 2003 89 400000 3.8 0 0 1 1 0 1 1
+## 1484 1997 109 20000000 6.6 0 0 1 0 0 1 1
+## 1485 1997 97 25000 7.3 0 0 1 0 0 1 0
+## 1486 2001 123 48000000 6.3 0 1 0 0 0 1 0
+## 1487 1999 109 30000000 6.6 0 0 1 0 0 1 0
+## 1488 1999 112 27000000 6.1 0 0 1 0 0 1 1
+## 1489 1999 88 250000 4.3 0 0 1 0 0 1 0
+## 1490 2001 112 13000000 6.1 0 1 0 0 0 0 1
+## 1491 1998 110 45000000 6.8 0 0 1 1 0 0 0
+## 1492 2003 98 9200000 5.9 0 0 1 1 0 0 0
+## 1493 2003 90 1000000 6.0 0 1 0 0 0 1 1
+## 1494 1999 78 75000000 4.0 1 0 0 1 0 1 0
+## 1495 2002 89 18000000 3.4 0 0 1 1 0 0 0
+## 1496 2004 115 4200000 6.3 0 0 1 1 0 0 0
+## 1497 1996 101 67000000 5.7 0 0 1 1 0 0 1
+## 1498 1998 88 7000000 6.0 1 0 0 0 0 1 1
+## 1499 2003 102 16000000 5.5 0 1 0 0 0 1 1
+## 1500 1996 90 15000000 4.2 1 0 0 0 0 1 1
+## 1501 1970 103 6000000 6.9 0 1 0 0 0 0 1
+## 1502 1999 108 75000000 5.8 0 0 1 0 0 1 1
+## 1503 2003 90 26000000 6.3 0 0 1 0 0 0 0
+## 1504 2002 98 250000 7.3 0 0 1 0 0 0 1
+## 1505 1995 101 20000000 5.0 0 1 0 1 0 0 0
+## 1506 2001 105 600000 6.8 0 1 0 0 0 0 1
+## 1507 1998 83 60000000 7.0 1 0 0 0 1 1 0
+## 1508 2004 90 6000000 5.4 1 0 0 0 0 0 1
+## 1509 2001 84 13000000 5.1 0 1 0 0 0 1 1
+## 1510 1997 124 60000000 5.7 0 0 1 0 0 0 0
+## 1511 1996 89 17000000 4.5 1 0 0 0 0 1 0
+## 1512 1997 194 200000000 6.9 0 1 0 0 0 0 1
+## 1513 1979 143 35000000 5.8 1 0 0 0 0 0 0
+## 1514 1996 96 3500000 6.0 0 0 1 0 0 1 0
+## 1515 1999 99 1000000 5.6 1 0 0 1 0 0 0
+## 1516 1999 120 15000000 5.9 0 1 0 0 0 1 1
+## 1517 2001 137 15000000 7.3 0 0 1 0 0 0 1
+## 1518 1999 108 1200000 6.7 0 0 1 0 0 1 0
+## 1519 2000 91 9000000 4.7 0 1 0 0 0 1 1
+## 1520 1998 110 1500000 7.2 0 0 1 0 0 1 1
+## 1521 2002 91 35000000 5.3 0 0 1 0 0 0 0
+## 1522 2002 82 120000000 5.9 1 0 0 0 0 1 0
+## 1523 1998 121 26000000 7.0 1 0 0 0 0 1 1
+## 1524 1994 132 2800000 7.6 0 0 1 0 0 0 1
+## 1525 1997 95 36000000 6.7 0 0 1 1 0 0 0
+## 1526 1998 101 10000000 6.2 0 1 0 0 0 1 0
+## 1527 2005 90 15000000 5.0 0 1 0 0 0 1 0
+## 1528 2000 135 65000000 6.3 0 0 1 1 0 0 1
+## 1529 1996 97 125000 7.0 0 0 1 0 0 1 0
+## 1530 2000 98 10000000 6.1 0 1 0 0 0 1 0
+## 1531 1999 90 40000000 5.0 0 1 0 0 0 1 0
+## 1532 1994 93 1000000 5.7 0 0 1 0 0 0 1
+## 1533 1995 90 4000000 5.0 0 0 1 0 0 1 1
+## 1534 1996 114 3000000 5.5 0 0 1 0 0 0 1
+## 1535 1996 91 7500000 6.5 0 0 1 1 0 1 0
+## 1536 2004 137 95000000 5.9 0 1 0 1 0 0 1
+## 1537 1998 100 10000000 5.8 0 0 1 0 0 1 0
+## 1538 2003 92 5000000 5.6 0 0 1 0 0 0 1
+## 1539 2004 95 24000000 5.8 0 1 0 0 0 1 0
+## 1540 2002 94 6000000 5.8 0 0 1 0 0 1 0
+## 1541 1951 103 1200000 8.3 1 0 0 0 0 0 1
+## 1542 2000 93 6000000 4.8 0 0 1 1 0 0 0
+## 1543 2002 88 800000 6.7 0 0 1 0 0 1 1
+## 1544 2004 102 5000000 7.7 0 0 1 0 0 0 1
+## 1545 2002 95 825000 4.5 1 0 0 0 0 0 1
+## 1546 2001 146 90000000 6.8 0 1 0 0 0 0 1
+## 1547 1997 126 90000000 7.1 0 1 0 1 0 0 1
+## 1548 2002 112 83000 2.4 0 0 1 1 0 0 1
+## 1549 1997 91 3500000 7.2 0 0 1 0 0 1 0
+## 1550 2004 99 20000000 7.9 0 0 1 1 0 1 0
+## 1551 2002 81 60000000 7.3 1 0 0 0 1 1 0
+## 1552 2002 92 3000000 3.8 0 0 1 1 0 0 0
+## 1553 2004 85 75000 7.0 0 0 1 0 0 0 0
+## 1554 1995 101 25000000 6.2 0 1 0 0 0 1 0
+## 1555 1996 78 250000 6.5 0 0 1 0 0 1 0
+## 1556 1958 77 125000 4.6 1 0 0 0 0 0 0
+## 1557 2004 100 1500000 5.0 0 0 1 0 0 1 1
+## 1558 2004 92 1000000 4.6 0 0 1 0 0 0 1
+## 1559 1999 118 30000000 5.7 0 1 0 0 0 0 1
+## 1560 1997 120 24000000 5.9 0 0 1 0 0 0 0
+## 1561 2001 120 48000000 7.2 0 1 0 0 0 0 1
+## 1562 1972 250 1250000 6.9 0 0 0 0 0 0 1
+## 1563 1996 101 50000000 4.8 0 0 1 1 0 0 0
+## 1564 2000 112 9000000 5.3 0 1 0 0 0 1 1
+## 1565 2001 117 2500000 5.2 1 0 0 0 0 0 1
+## 1566 2001 91 24000000 4.8 0 1 0 1 0 1 0
+## 1567 2000 115 24000000 6.9 1 0 0 0 0 1 1
+## 1568 2001 84 22000000 4.8 0 0 1 0 0 1 0
+## 1569 1995 90 4000000 4.1 0 0 1 0 0 0 0
+## 1570 1994 93 800000 4.2 0 0 1 0 0 0 0
+## 1571 2004 127 30000000 7.4 0 0 1 0 0 0 1
+## 1572 1999 106 4000000 5.3 0 0 1 0 0 0 1
+## 1573 2001 119 1000000 7.1 0 1 0 0 0 0 1
+## 1574 2001 130 98000000 6.1 0 1 0 1 0 0 0
+## 1575 2003 79 130000 6.1 0 0 1 0 0 0 1
+## 1576 1994 92 230000 7.9 0 0 1 0 0 1 1
+## 1577 2000 127 65000000 6.4 0 1 0 0 0 1 0
+## 1578 2000 118 31000000 7.4 0 1 0 0 0 0 1
+## 1579 1999 89 10000000 7.7 0 0 1 0 0 1 0
+## 1580 2000 99 28000000 4.9 0 0 1 0 0 0 0
+## 1581 1996 160 27000000 7.1 0 0 1 0 0 0 1
+## 1582 1999 132 100000000 6.2 1 0 0 0 0 0 1
+## 1583 2003 98 10000000 6.3 0 0 1 0 0 1 0
+## 1584 2003 80 780000 5.2 0 0 1 0 0 0 0
+## 1585 2002 99 30000000 5.5 0 1 0 1 0 1 0
+## 1586 2001 112 4000000 7.3 0 0 1 0 0 0 1
+## 1587 1998 91 2000000 6.2 0 1 0 1 0 0 0
+## 1588 2001 94 5000000 6.5 0 0 1 0 0 1 1
+## 1589 1997 111 27000000 6.4 0 0 1 0 0 0 1
+## 1590 1999 89 9000000 7.2 0 0 1 0 0 0 1
+## 1591 1996 117 25000000 6.6 0 1 0 0 0 1 0
+## 1592 2001 87 30000000 5.1 0 1 0 0 0 1 0
+## 1593 2002 105 12000000 7.2 0 0 1 0 0 0 1
+## 1594 2003 91 18000000 4.2 0 0 1 1 0 0 0
+## 1595 1996 102 36000000 6.5 1 0 0 0 0 1 1
+## 1596 2002 106 6000000 5.6 0 0 1 0 0 1 1
+## 1597 1996 84 13000000 3.8 0 0 1 1 0 0 0
+## 1598 1998 100 5000000 6.4 0 0 1 0 0 1 1
+## 1599 2004 106 40000000 6.5 1 0 0 1 0 0 0
+## 1600 2000 102 25000000 4.9 0 0 1 1 0 0 1
+## 1601 1999 127 24000000 7.0 0 0 1 0 0 0 1
+## 1602 2001 99 1000000 4.6 0 0 1 0 0 1 1
+## 1603 1997 155 30000000 6.4 0 0 1 0 0 0 1
+## 1604 1999 88 100000 4.7 0 0 1 0 0 0 1
+## 1605 1995 135 22000000 6.9 0 1 0 0 0 0 1
+## 1606 1999 98 30000000 5.3 0 0 1 0 0 0 0
+## 1607 2002 99 1500000 6.5 0 0 1 0 0 1 1
+## 1608 2000 128 30000000 6.8 0 1 0 0 0 1 1
+## 1609 2004 108 125000000 6.7 1 0 0 0 0 1 0
+## 1610 2004 92 10000000 5.9 0 1 0 0 0 0 0
+## 1611 2000 130 90000000 6.6 0 1 0 0 0 0 1</code></pre>
+<pre class="r"><code>y&lt;-as.matrix(movnot6$Romance) #grab response
+x&lt;-model.matrix(Romance~(.),data=movnot6)[,-1] #grab predictors
+head(x)</code></pre>
+<pre><code>## year length budget rating mpaaPG mpaaPG-13 mpaaR Action
+Animation Comedy Drama
+## 1 1997 113 2.3e+07 4.8 0 1 0 0 0 1 0
+## 2 1999 97 1.6e+07 6.7 0 1 0 0 0 1 0
+## 3 2002 98 1.1e+06 5.6 0 0 1 0 0 1 0
+## 4 2004 98 3.7e+07 6.4 0 1 0 0 0 1 1
+## 5 1999 102 8.5e+07 6.1 0 0 1 1 0 0 0
+## 6 2001 120 4.2e+07 6.1 0 0 1 0 0 0 1</code></pre>
+<pre class="r"><code>x&lt;-scale(x) #good idea to standardize
+
+library(glmnet)
+cv &lt;- cv.glmnet(x,y, family=&quot;binomial&quot;) #picks an optimal value for lambda through 10-fold CV
+lasso&lt;-glmnet(x,y,family=&quot;binomial&quot;,lambda=cv$lambda.1se)
+coef(lasso)</code></pre>
+<pre><code>## 12 x 1 sparse Matrix of class &quot;dgCMatrix&quot;
+##                      s0
+## (Intercept) -1.58450566
+## year         .         
+## length       0.07714618
+## budget       .         
+## rating       .         
+## mpaaPG       .         
+## mpaaPG-13    0.14808861
+## mpaaR        .         
+## Action      -0.28146165
+## Animation    .         
+## Comedy       0.31815357
+## Drama        0.13232885</code></pre>
+<pre class="r"><code>###
+
+movnot61&lt;-movnot6%&gt;% mutate(mpaaPG13=ifelse(movnot$mpaa==&quot;PG-13&quot;,1,0))
+
+k=10
+set.seed(348)
+
+data&lt;-movnot61[sample(nrow(movnot61)),]
+folds&lt;-cut(seq(1:nrow(movnot61)),breaks=k,labels=F)
+
+diags2&lt;-NULL
+for(i in 1:k){
+  train&lt;-data[folds!=i,]
+  test&lt;-data[folds==i,]
+  truth&lt;-test$Romance
+  
+  fitall2&lt;-glm(Romance~length+mpaaPG13+Action+Comedy+Drama,data=train)
+  probsall2&lt;-predict(fitall2,newdata = test,type=&quot;response&quot;)
+
+diags2&lt;-rbind(diags2,class_diag(probsall2,truth))
+}
+
+diags2%&gt;%summarize_all(mean) </code></pre>
+<pre><code>##         acc sens      spec ppv       auc
+## 1 0.8184358    0 0.9992754 NaN 0.7399957</code></pre>
+<ul>
+<li>From running the regression, it was found that the variables that had a significant effect on predicting if the movie was a romance movie was the length, of the movie was a comedy movie, if the movie was an action movie and if the movie was a drama movie. The initial auc was 0.752259. Next, the 10-fold CV was performed, and the auc decreased a little with 0.7383472. This value was only slightly lower than the in in-sample metrics. Next, a lasso was performed to determine which variables had significant effects. Length, mpaaPG-13, action, comedy, and drama remained important. These variables were then used in another 10 fold CV. The auc for that was 0.7399957, which was a decrease from the initial auc, but practically identical to the first 10 fold CV.</li>
+</ul>
 </div>
 
             

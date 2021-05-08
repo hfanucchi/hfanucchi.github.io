@@ -18,38 +18,20 @@ Link to google</description>
     </item>
     
     <item>
-      <title>Project 1</title>
-      <link>/project/project1/</link>
-      <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/project/project1/</guid>
-      <description> Test Project 1  </description>
-    </item>
-    
-    <item>
-      <title>Project 2</title>
-      <link>/project/project2/</link>
-      <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/project/project2/</guid>
-      <description> Test Project 2  </description>
-    </item>
-    
-    <item>
       <title> fanucchiproject2</title>
-      <link>/project/fanucchi_project2/</link>
+      <link>/project/project2/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/project/fanucchi_project2/</guid>
+      <guid>/project/project2/</guid>
       <description>R Markdown 0. (5 pts) Introduce your dataset and each of your variables (or just your main variables if you have lots) in a paragraph. What are they measuring? How many observations? movies&amp;lt;-read_csv(&amp;quot;https://vincentarelbundock.github.io/Rdatasets/csv/ggplot2movies/movies.csv&amp;quot;) mov &amp;lt;-movies %&amp;gt;% na.omit() %&amp;gt;% select(-1, -7, -8, -9, -10, -11, -12, -13, -14, -15, -16, -17) mov &amp;lt;-subset(mov, mov$Short !=1) mov &amp;lt;- mov %&amp;gt;% select(-13) mov &amp;lt;- subset(mov, mov$Documentary !=1) mov &amp;lt;- mov %&amp;gt;% select(-11) movnot &amp;lt;- mov %&amp;gt;% select(-1)  The data set that I chose to do project 2 is based on the statistics and information IMDB has on a set of movies from 1938-2005.</description>
     </item>
     
     <item>
       <title>fanucchi.project1</title>
-      <link>/project/p1.fanucchi/</link>
+      <link>/project/project1/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>/project/p1.fanucchi/</guid>
+      <guid>/project/project1/</guid>
       <description>Find Data library(tidyverse) motor &amp;lt;- read_csv(&amp;quot;https://vincentarelbundock.github.io/Rdatasets/csv/stevedata/mvprod.csv&amp;quot;) pop &amp;lt;- read_csv(&amp;quot;https://vincentarelbundock.github.io/Rdatasets/csv/gt/countrypops.csv&amp;quot;) glimpse(motor) ## Rows: 1,206 ## Columns: 4 ## $ X1 &amp;lt;dbl&amp;gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18… ## $ country &amp;lt;chr&amp;gt; &amp;quot;Algeria&amp;quot;, &amp;quot;Argentina&amp;quot;, &amp;quot;Australia&amp;quot;, &amp;quot;Austria&amp;quot;, &amp;quot;Azerbaijan&amp;quot;,… ## $ year &amp;lt;dbl&amp;gt; 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1950, 1… ## $ value &amp;lt;dbl&amp;gt; NA, NA, 58000, NA, NA, 0, 2400, NA, 0, NA, 387726, NA, NA, NA… glimpse(pop) ## Rows: 12,470 ## Columns: 6 ## $ X1 &amp;lt;dbl&amp;gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,… ## $ country_name &amp;lt;chr&amp;gt; &amp;quot;Aruba&amp;quot;, &amp;quot;Aruba&amp;quot;, &amp;quot;Aruba&amp;quot;, &amp;quot;Aruba&amp;quot;, &amp;quot;Aruba&amp;quot;, &amp;quot;Aruba&amp;quot;, … ## $ country_code_2 &amp;lt;chr&amp;gt; &amp;quot;AW&amp;quot;, &amp;quot;AW&amp;quot;, &amp;quot;AW&amp;quot;, &amp;quot;AW&amp;quot;, &amp;quot;AW&amp;quot;, &amp;quot;AW&amp;quot;, &amp;quot;AW&amp;quot;, &amp;quot;AW&amp;quot;, &amp;quot;AW&amp;quot;, … ## $ country_code_3 &amp;lt;chr&amp;gt; &amp;quot;ABW&amp;quot;, &amp;quot;ABW&amp;quot;, &amp;quot;ABW&amp;quot;, &amp;quot;ABW&amp;quot;, &amp;quot;ABW&amp;quot;, &amp;quot;ABW&amp;quot;, &amp;quot;ABW&amp;quot;, &amp;quot;ABW&amp;quot;… ## $ year &amp;lt;dbl&amp;gt; 1960, 1961, 1962, 1963, 1964, 1965, 1966, 1967, 1968, … ## $ population &amp;lt;dbl&amp;gt; 54211, 55438, 56225, 56695, 57032, 57360, 57715, 58055…  1.</description>
     </item>
     
